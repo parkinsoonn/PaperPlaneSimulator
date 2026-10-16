@@ -7,7 +7,7 @@ public class PaperPlaneController : MonoBehaviour
     [Header("Launch")]
     public float minLaunchSpeed = 8f;
     public float maxLaunchSpeed = 28f;
-    public float maxChargeTime = 1.5f;  // seconds of holding Space for full power
+    public float maxChargeTime = 1.5f;  // seconds for the power to sweep 0 -> 100 (then back down)
     public float launchPitch = 30f;
 
     [Header("Controls")]
@@ -28,9 +28,16 @@ public class PaperPlaneController : MonoBehaviour
     float yaw, pitch, bank;
     float launchGrace;   // ignore touching the pad right after launch
 
-    public float Charge { get; private set; }   // 0..1, how long Space has been held
+    public float Charge { get; private set; }   // 0..1, swings back and forth while Space is held
     public bool IsCharging { get; private set; }
     public bool IsFlying => flying;
+    public bool HasLanded { get; private set; }  // landed and waiting for a restart
+    public float FlightDistance { get; private set; }   // horizontal meters from the launch point; kept after landing
+    Vector3 launchPoint;
+    bool hasLaunched;
+    float chargeTime;
+    Vector3 startPosition;
+    Quaternion startRotation;
 
     void Awake()
     {
@@ -38,19 +45,46 @@ public class PaperPlaneController : MonoBehaviour
         rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        startPosition = transform.position;
+        startRotation = transform.rotation;
         yaw = transform.eulerAngles.y;
     }
 
     void Update()
     {
         var kb = Keyboard.current;
-        if (kb == null || flying) return;
+        if (kb == null || flying || HasLanded) return;
 
-        if (kb.spaceKey.wasPressedThisFrame) IsCharging = true;
+        if (kb.spaceKey.wasPressedThisFrame)
+        {
+            IsCharging = true;
+            chargeTime = 0f;
+        }
         if (IsCharging && kb.spaceKey.isPressed)
-            Charge = Mathf.Clamp01(Charge + Time.deltaTime / maxChargeTime);
+        {
+            chargeTime += Time.deltaTime;
+            Charge = Mathf.PingPong(chargeTime / maxChargeTime, 1f);
+        }
         if (IsCharging && kb.spaceKey.wasReleasedThisFrame)
             Launch(Charge);
+    }
+
+    // Puts the plane back on the launch pad, ready for a new throw.
+    public void ResetToPad()
+    {
+        flying = false;
+        HasLanded = false;
+        hasLaunched = false;
+        IsCharging = false;
+        Charge = 0f;
+        FlightDistance = 0f;
+        pitch = 0f;
+        bank = 0f;
+        yaw = startRotation.eulerAngles.y;
+        rb.linearVelocity = Vector3.zero;
+        rb.position = startPosition;
+        rb.rotation = startRotation;
+        transform.SetPositionAndRotation(startPosition, startRotation);
     }
 
     void Launch(float charge)
@@ -59,6 +93,9 @@ public class PaperPlaneController : MonoBehaviour
         Charge = 0f;
         flying = true;
         launchGrace = 0.3f;
+        launchPoint = rb.position;
+        hasLaunched = true;
+        FlightDistance = 0f;
         pitch = launchPitch;
         bank = 0f;
         rb.rotation = Quaternion.Euler(-pitch, yaw, 0f);
@@ -67,6 +104,12 @@ public class PaperPlaneController : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Keep measuring after touchdown so the slide counts toward the throw.
+        if (hasLaunched)
+        {
+            Vector3 travelled = rb.position - launchPoint;
+            FlightDistance = new Vector2(travelled.x, travelled.z).magnitude;
+        }
         if (!flying) return;
 
         float dt = Time.fixedDeltaTime;
@@ -121,6 +164,7 @@ public class PaperPlaneController : MonoBehaviour
     {
         if (!flying || launchGrace > 0f) return;
         flying = false;
+        HasLanded = true;
         pitch = 0f;
         bank = 0f;
         rb.rotation = Quaternion.Euler(0f, yaw, 0f);

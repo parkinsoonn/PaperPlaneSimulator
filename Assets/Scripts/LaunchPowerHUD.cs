@@ -1,31 +1,44 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
-// Power bar at the bottom center of the screen that fills while Space is held.
+// Power bar at the bottom center, live distance at the top, and a result screen with a replay button.
 public class LaunchPowerHUD : MonoBehaviour
 {
     public PaperPlaneController plane;
     public Vector2 barSize = new Vector2(500f, 28f);
     public float bottomMargin = 80f;
+    public float resultDelay = 0.8f;   // let the plane finish sliding before the result screen fades in
 
     CanvasGroup group;
     RectTransform barRoot, fill;
     Image fillImage;
     Text label;
+    CanvasGroup distanceGroup;
+    Text distanceLabel;
+    CanvasGroup resultGroup;
+    Text resultDistance;
+    float landedTime = -1f;
 
     void Start()
     {
-        var canvasGo = new GameObject("LaunchPowerCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(CanvasGroup));
+        if (FindAnyObjectByType<EventSystem>() == null)
+            new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+
+        var canvasGo = new GameObject("LaunchPowerCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         canvasGo.transform.SetParent(transform, false);
         canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
         var scaler = canvasGo.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920f, 1080f);
         scaler.matchWidthOrHeight = 0.5f;
-        group = canvasGo.GetComponent<CanvasGroup>();
-        group.blocksRaycasts = false;
+
+        CreateDistanceMeter(canvasGo.transform);
 
         barRoot = CreateRect("PowerBar", canvasGo.transform);
+        group = barRoot.gameObject.AddComponent<CanvasGroup>();
+        group.blocksRaycasts = false;
         barRoot.anchorMin = barRoot.anchorMax = barRoot.pivot = new Vector2(0.5f, 0f);
         barRoot.anchoredPosition = new Vector2(0f, bottomMargin);
         barRoot.sizeDelta = barSize;
@@ -51,6 +64,91 @@ public class LaunchPowerHUD : MonoBehaviour
         label.alignment = TextAnchor.LowerCenter;
         label.color = Color.white;
         labelRect.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.8f);
+
+        CreateResultScreen(canvasGo.transform);
+    }
+
+    // Full-screen dimmed panel shown after landing: distance and a replay button.
+    void CreateResultScreen(Transform canvas)
+    {
+        var panel = CreateRect("ResultScreen", canvas);
+        panel.anchorMin = Vector2.zero;
+        panel.anchorMax = Vector2.one;
+        panel.offsetMin = panel.offsetMax = Vector2.zero;
+        panel.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.9f);
+        resultGroup = panel.gameObject.AddComponent<CanvasGroup>();
+        SetResultVisible(0f);
+
+        CreateText("Title", panel, "Gidilen mesafe", 36, new Vector2(0f, 200f), new Vector2(600f, 50f));
+        resultDistance = CreateText("Distance", panel, "", 110, new Vector2(0f, 110f), new Vector2(800f, 130f));
+
+        var button = CreateRect("ReplayButton", panel);
+        button.anchoredPosition = new Vector2(0f, -110f);
+        button.sizeDelta = new Vector2(340f, 80f);
+        var buttonImage = button.gameObject.AddComponent<Image>();
+        buttonImage.color = new Color(0.95f, 0.93f, 0.88f);
+        var btn = button.gameObject.AddComponent<Button>();
+        btn.targetGraphic = buttonImage;
+        btn.onClick.AddListener(() =>
+        {
+            plane.ResetToPad();
+            SetResultVisible(0f);
+            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+        });
+        var buttonText = CreateText("Text", button, "TEKRAR OYNA", 34, Vector2.zero, Vector2.zero);
+        var buttonTextRect = buttonText.rectTransform;
+        buttonTextRect.anchorMin = Vector2.zero;
+        buttonTextRect.anchorMax = Vector2.one;
+        buttonText.color = new Color(0.15f, 0.15f, 0.15f);
+        Destroy(buttonText.GetComponent<Outline>());
+    }
+
+    void SetResultVisible(float alpha)
+    {
+        resultGroup.alpha = alpha;
+        resultGroup.interactable = resultGroup.blocksRaycasts = alpha > 0.99f;
+    }
+
+    // Centered white bold text with an outline, positioned relative to the parent's center.
+    static Text CreateText(string name, Transform parent, string text, int size, Vector2 position, Vector2 boxSize)
+    {
+        var rect = CreateRect(name, parent);
+        rect.anchoredPosition = position;
+        rect.sizeDelta = boxSize;
+        var t = rect.gameObject.AddComponent<Text>();
+        t.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        t.fontSize = size;
+        t.fontStyle = FontStyle.Bold;
+        t.alignment = TextAnchor.MiddleCenter;
+        t.color = Color.white;
+        t.text = text;
+        rect.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.8f);
+        return t;
+    }
+
+    // Distance box at the top center: live meters during the throw.
+    void CreateDistanceMeter(Transform canvas)
+    {
+        var box = CreateRect("DistanceMeter", canvas);
+        box.anchorMin = box.anchorMax = box.pivot = new Vector2(0.5f, 1f);
+        box.anchoredPosition = new Vector2(0f, -40f);
+        box.sizeDelta = new Vector2(360f, 70f);
+        box.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
+        distanceGroup = box.gameObject.AddComponent<CanvasGroup>();
+        distanceGroup.blocksRaycasts = false;
+        distanceGroup.alpha = 0f;
+
+        var textRect = CreateRect("Text", box);
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = textRect.offsetMax = Vector2.zero;
+        distanceLabel = textRect.gameObject.AddComponent<Text>();
+        distanceLabel.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        distanceLabel.fontSize = 40;
+        distanceLabel.fontStyle = FontStyle.Bold;
+        distanceLabel.alignment = TextAnchor.MiddleCenter;
+        distanceLabel.color = Color.white;
+        textRect.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.8f);
     }
 
     static RectTransform CreateRect(string name, Transform parent)
@@ -64,8 +162,8 @@ public class LaunchPowerHUD : MonoBehaviour
     {
         if (plane == null || group == null) return;
 
-        // Visible only while waiting on the ground.
-        float targetAlpha = plane.IsFlying ? 0f : 1f;
+        // Visible only while waiting on the pad.
+        float targetAlpha = plane.IsFlying || plane.HasLanded ? 0f : 1f;
         group.alpha = Mathf.MoveTowards(group.alpha, targetAlpha, 4f * Time.unscaledDeltaTime);
 
         float c = plane.Charge;
@@ -78,8 +176,20 @@ public class LaunchPowerHUD : MonoBehaviour
             ? $"GÜÇ %{Mathf.RoundToInt(c * 100f)}"
             : "Fırlatmak için SPACE basılı tut";
 
-        // Pulse at full power.
-        float pulse = c >= 1f ? 1f + 0.04f * Mathf.Sin(Time.unscaledTime * 18f) : 1f;
-        barRoot.localScale = new Vector3(pulse, pulse, 1f);
+        int meters = Mathf.RoundToInt(plane.FlightDistance);
+        distanceLabel.text = $"{meters} m";
+        bool inThrow = plane.IsFlying || (plane.HasLanded && resultGroup.alpha <= 0f);
+        distanceGroup.alpha = Mathf.MoveTowards(distanceGroup.alpha, inThrow ? 1f : 0f, 4f * Time.unscaledDeltaTime);
+
+        if (!plane.HasLanded)
+        {
+            landedTime = -1f;
+            if (resultGroup.alpha > 0f) SetResultVisible(0f);
+            return;
+        }
+        if (landedTime < 0f) landedTime = Time.unscaledTime;
+        resultDistance.text = $"{meters} m";
+        if (Time.unscaledTime - landedTime >= resultDelay)
+            SetResultVisible(Mathf.MoveTowards(resultGroup.alpha, 1f, 3f * Time.unscaledDeltaTime));
     }
 }
