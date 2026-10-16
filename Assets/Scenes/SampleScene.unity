@@ -150,6 +150,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarSpawner
   plane: {fileID: 1184159632}
   starMaterial: {fileID: 2100000, guid: 7abe467876c20b94080b5c508b13ebad, type: 2}
+  glowMaterial: {fileID: 2100000, guid: 3ee6d28fd3987b8479a4eade6d8de0de, type: 2}
+  glowIntensity: 1.6
+  glowSize: 6
   spacing: 35
   spawnAhead: 120
   despawnBehind: 20
@@ -161,15 +164,15 @@ MonoBehaviour:
   - name: Blue
     color: {r: 0.25, g: 0.55, b: 1, a: 1}
     weight: 78
-    boost: 3
+    boost: 6
   - name: Yellow
     color: {r: 1, g: 0.85, b: 0.15, a: 1}
     weight: 18
-    boost: 6
+    boost: 12
   - name: Red
     color: {r: 1, g: 0.2, b: 0.15, a: 1}
     weight: 4
-    boost: 12
+    boost: 24
 --- !u!4 &202365402
 Transform:
   m_ObjectHideFlags: 0
@@ -592,6 +595,7 @@ GameObject:
   - component: {fileID: 660780931}
   - component: {fileID: 660780930}
   - component: {fileID: 660780932}
+  - component: {fileID: 660780933}
   m_Layer: 0
   m_Name: Street
   m_TagString: Untagged
@@ -652,6 +656,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurvedWorld
   curvature: 0.0015
+--- !u!114 &660780933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660780929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6bf4ee1334e2e4297de8d0caf09bdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityBuilder
+  plane: {fileID: 1184159632}
+  street: {fileID: 660780930}
+  buildingMaterial: {fileID: 2100000, guid: 768ce52518fe55148b7bc8fa9d94b322, type: 2}
+  cities:
+  - {fileID: 4900000, guid: ef1c5f2df78038a47bdc0661346b8c29, type: 3}
+  - {fileID: 4900000, guid: 7a4ea9e97bc219d43bef1b0c01becccc, type: 3}
+  - {fileID: 4900000, guid: a163d96b22251b6439d359e0142ece5b, type: 3}
+  - {fileID: 4900000, guid: 3ac76e355f03bd949b816256760b193f, type: 3}
+  - {fileID: 4900000, guid: 55b895f75413a744f9dfcf2feb49765d, type: 3}
+  - {fileID: 4900000, guid: 57101644fa435654885b53b6e4b22776, type: 3}
+  park: {fileID: 4900000, guid: bf6d0db50a084c14b8d293011b7f4078, type: 3}
+  zoneSegments: 16
+  transitionSegments: 2
+  sidewalkHeight: 0.2
+  lotHeight: 0.03
+  fogBlendSpeed: 0.5
+  maxPropsPerSide: 10
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

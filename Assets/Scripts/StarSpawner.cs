@@ -16,6 +16,9 @@ public class StarSpawner : MonoBehaviour
 
     public PaperPlaneController plane;
     public Material starMaterial;
+    public Material glowMaterial;        // Custom/CurvedGlow halo drawn around each star
+    public float glowIntensity = 1.6f;   // HDR boost on the star color so bloom picks it up
+    public float glowSize = 6f;          // halo size relative to the star
     public float spacing = 35f;          // meters between stars along the street
     public float spawnAhead = 120f;
     public float despawnBehind = 20f;
@@ -25,13 +28,14 @@ public class StarSpawner : MonoBehaviour
     public float openingHeight = 12f;    // since the plane climbs right after the throw
     public StarType[] types =
     {
-        new StarType { name = "Blue",   color = new Color(0.25f, 0.55f, 1f),  weight = 78f, boost = 3f },
-        new StarType { name = "Yellow", color = new Color(1f, 0.85f, 0.15f),  weight = 18f, boost = 6f },
-        new StarType { name = "Red",    color = new Color(1f, 0.2f, 0.15f),   weight = 4f,  boost = 12f },
+        new StarType { name = "Blue",   color = new Color(0.25f, 0.55f, 1f),  weight = 78f, boost = 6f },
+        new StarType { name = "Yellow", color = new Color(1f, 0.85f, 0.15f),  weight = 18f, boost = 12f },
+        new StarType { name = "Red",    color = new Color(1f, 0.2f, 0.15f),   weight = 4f,  boost = 24f },
     };
 
     readonly List<GameObject> stars = new List<GameObject>();
     Mesh starMesh;
+    Mesh glowMesh;
     float nextZ;
     float launchZ;
     bool active;
@@ -39,6 +43,7 @@ public class StarSpawner : MonoBehaviour
     void Awake()
     {
         starMesh = BuildStarMesh(1f, 0.45f, 0.3f);
+        glowMesh = BuildQuad();
     }
 
     void Update()
@@ -93,15 +98,44 @@ public class StarSpawner : MonoBehaviour
         var renderer = go.AddComponent<MeshRenderer>();
         renderer.sharedMaterial = starMaterial;
         var block = new MaterialPropertyBlock();
-        block.SetColor("_BaseColor", type.color);
+        block.SetColor("_BaseColor", type.color * glowIntensity);
         renderer.SetPropertyBlock(block);
         renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+        Transform glow = null;
+        if (glowMaterial != null)
+        {
+            glow = new GameObject("Glow").transform;
+            glow.SetParent(go.transform, false);
+            glow.localScale = Vector3.one * glowSize;
+            glow.gameObject.AddComponent<MeshFilter>().sharedMesh = glowMesh;
+            var glowRenderer = glow.gameObject.AddComponent<MeshRenderer>();
+            glowRenderer.sharedMaterial = glowMaterial;
+            glowRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            var glowBlock = new MaterialPropertyBlock();
+            glowBlock.SetColor("_BaseColor", type.color);
+            glowRenderer.SetPropertyBlock(glowBlock);
+        }
 
         var trigger = go.AddComponent<SphereCollider>();
         trigger.isTrigger = true;
         trigger.radius = 1.6f;   // a bit generous so stars are easy to grab
-        go.AddComponent<StarPickup>().boost = type.boost;
+        var pickup = go.AddComponent<StarPickup>();
+        pickup.boost = type.boost;
+        pickup.glow = glow;
         stars.Add(go);
+    }
+
+    // Unit quad in the xy plane; the glow shader turns it to face the camera.
+    static Mesh BuildQuad()
+    {
+        var mesh = new Mesh { name = "GlowQuad" };
+        mesh.SetVertices(new[] { new Vector3(-0.5f, -0.5f, 0f), new Vector3(0.5f, -0.5f, 0f), new Vector3(0.5f, 0.5f, 0f), new Vector3(-0.5f, 0.5f, 0f) });
+        mesh.SetUVs(0, new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) });
+        mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
+        // Billboarded in the shader, so give it generous bounds to avoid culling.
+        mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 2f);
+        return mesh;
     }
 
     StarType PickType()

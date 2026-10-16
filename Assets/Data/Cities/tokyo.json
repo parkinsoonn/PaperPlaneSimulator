@@ -1,0 +1,123 @@
+{
+  "id": "tokyo",
+  "name": "Tokyo",
+  "environment": { "lotColor": "#77777A", "sidewalkColor": "#A6A6A8", "fogColor": "#D8D9E0" },
+  "buildings": [
+    {
+      "id": "sign_towers", "segments": 1, "weight": 4, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 14, -3], "size": [12, 28, 8], "color": "#B9B9BC" },
+        { "type": "box", "pos": [0, 9, 4.5], "size": [12, 18, 6.5], "color": "#E6E6E2" },
+        { "type": "facade", "pos": [0, 15, -3], "size": [12, 24, 8], "spacing": [3, 2.2], "cell": [1.8, 1.6], "color": "#3A4250" },
+        { "type": "facade", "pos": [0, 9.5, 4.5], "size": [12, 15, 6.5], "spacing": [3, 2], "cell": [1.8, 1.4], "color": "#3A4250" },
+        { "type": "box", "pos": [-6.6, 14, -6.6], "size": [0.6, 10, 1], "color": "#E0393E" },
+        { "type": "box", "pos": [-6.6, 10, 1.4], "size": [0.6, 7, 0.9], "color": "#F2C230" },
+        { "type": "box", "pos": [-6.3, 4.5, 4.5], "size": [0.4, 1.2, 5.5], "color": "#3BC4D9" },
+        { "type": "box", "pos": [6.4, 18, -3], "size": [0.6, 6, 4], "color": "#E55BA5" },
+        { "type": "box", "pos": [2, 28.6, -3], "size": [3, 1.2, 3], "color": "#8E9196" },
+        { "type": "cylinder", "pos": [2, 19, 5], "size": [1.6, 2, 1.6], "color": "#8E9196" }
+      ]
+    },
+    {
+      "id": "pencil_building", "segments": 1, "weight": 3, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 17, 0], "size": [12, 34, 10], "color": "#E6E6E2" },
+        { "type": "windows", "pos": [-6.3, 17, 0], "size": [0.5, 32, 10], "spacing": [3, 10], "cell": [0.2, 10], "color": "#8E9196" },
+        { "type": "facade", "pos": [0, 17, 0], "size": [12, 32, 10], "spacing": [3, 2.2], "cell": [1.9, 1.6], "color": "#3A4250" },
+        { "type": "box", "pos": [-6.6, 20, -5.4], "size": [0.5, 14, 0.9], "color": "#E55BA5" },
+        { "type": "box", "pos": [-6.6, 12, 5.4], "size": [0.5, 8, 0.9], "color": "#45B86B" },
+        { "type": "cylinder", "pos": [2, 36, 0], "size": [0.15, 4, 0.15], "color": "#2D3038" }
+      ]
+    },
+    {
+      "id": "shopping_block", "segments": 2, "weight": 2, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 12, 0], "size": [15, 24, 36], "color": "#8E9196" },
+        { "type": "facade", "pos": [0, 12, 0], "size": [15, 22, 36], "spacing": [3, 2.4], "cell": [2, 1.8], "color": "#3A4250" },
+        { "type": "box", "pos": [-7.6, 16, 0], "size": [0.2, 8.6, 14.6], "color": "#2D3038" },
+        { "type": "box", "pos": [-7.65, 16, 0], "size": [0.3, 8, 14], "color": "#3BC4D9" },
+        { "type": "box", "pos": [-7.7, 6, -10], "size": [0.4, 1.4, 12], "color": "#E0393E" },
+        { "type": "box", "pos": [-7.7, 6, 10], "size": [0.4, 1.4, 12], "color": "#F2C230" },
+        { "type": "box", "pos": [-8.2, 14, -17], "size": [0.6, 14, 1], "color": "#E55BA5" },
+        { "type": "box", "pos": [-8.2, 14, 17], "size": [0.6, 14, 1], "color": "#45B86B" },
+        { "type": "box", "pos": [0, 16, -18.2], "size": [10, 6, 0.4], "color": "#E0393E" },
+        { "type": "box", "pos": [2, 26.5, 0], "size": [0.4, 4, 12], "color": "#F2C230" }
+      ]
+    },
+    {
+      "id": "shop_house", "segments": 1, "weight": 3, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 4, 0], "size": [11, 8, 15], "color": "#E6E6E2" },
+        { "type": "wedge", "pos": [0, 9.2, 0], "size": [12, 2.4, 16], "color": "#3B3F45" },
+        { "type": "box", "pos": [-6, 3.6, 0], "size": [1.2, 0.15, 13], "rot": [0, 0, -20], "color": "#2D3E73" },
+        { "type": "box", "pos": [-5.55, 1.6, 0], "size": [0.15, 2.6, 12], "color": "#3A4250" },
+        { "type": "box", "pos": [-6.2, 3, -5], "size": [0.5, 0.8, 0.5], "color": "#E0393E" },
+        { "type": "facade", "pos": [0, 6, 0], "size": [11, 2.4, 15], "spacing": [3, 2.4], "cell": [1.6, 1.6], "color": "#3A4250" },
+        { "type": "facade", "pos": [0, 1.6, 0], "size": [11, 2.4, 15], "spacing": [3, 3], "cell": [2, 1.6], "color": "#3A4250" }
+      ]
+    },
+    {
+      "id": "temple", "segments": 2, "weight": 1, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [3, 0.5, 0], "size": [14, 1, 24], "color": "#8E9196" },
+        { "type": "box", "pos": [3, 4, 0], "size": [10, 6, 16], "color": "#B8312F" },
+        { "type": "facade", "pos": [3, 3.5, 0], "size": [10, 4, 16], "spacing": [5, 3], "cell": [3.2, 1.8], "color": "#5A2A26" },
+        { "type": "box", "pos": [3, 7.2, 0], "size": [13, 0.4, 20], "color": "#3B3F45" },
+        { "type": "wedge", "pos": [3, 8.8, 0], "size": [14, 3.2, 22], "color": "#3B3F45" },
+        { "type": "wedge", "pos": [3, 11.6, 0], "size": [8, 2.4, 14], "color": "#3B3F45" },
+        { "type": "cylinder", "pos": [-6, 3, -3], "size": [0.5, 6, 0.5], "color": "#B8312F" },
+        { "type": "cylinder", "pos": [-6, 3, 3], "size": [0.5, 6, 0.5], "color": "#B8312F" },
+        { "type": "box", "pos": [-6, 6.2, 0], "size": [0.6, 0.5, 8.4], "color": "#2D3038" },
+        { "type": "box", "pos": [-6, 5.3, 0], "size": [0.4, 0.35, 7], "color": "#B8312F" },
+        { "type": "cylinder", "pos": [-2, 2.4, 10], "size": [0.3, 4.8, 0.3], "color": "#5A3E25" },
+        { "type": "dome", "pos": [-2, 5.6, 10], "size": [3.4, 1.6, 3.4], "color": "#F2A7C3" },
+        { "type": "cylinder", "pos": [-2, 2.4, -10], "size": [0.3, 4.8, 0.3], "color": "#5A3E25" },
+        { "type": "dome", "pos": [-2, 5.6, -10], "size": [3.4, 1.6, 3.4], "color": "#F2A7C3" }
+      ]
+    },
+    {
+      "id": "lattice_tower", "segments": 2, "weight": 1, "landmark": true,
+      "parts": [
+        { "type": "box", "pos": [8.1, 10.5, 5.1], "rot": [-15, 0, 15], "size": [1.6, 22, 1.6], "color": "#E0393E" },
+        { "type": "box", "pos": [-2.1, 10.5, 5.1], "rot": [-15, 0, -15], "size": [1.6, 22, 1.6], "color": "#E0393E" },
+        { "type": "box", "pos": [8.1, 10.5, -5.1], "rot": [15, 0, 15], "size": [1.6, 22, 1.6], "color": "#E0393E" },
+        { "type": "box", "pos": [-2.1, 10.5, -5.1], "rot": [15, 0, -15], "size": [1.6, 22, 1.6], "color": "#E0393E" },
+        { "type": "box", "pos": [3, 20.5, 0], "size": [11, 2.4, 11], "color": "#F2F2F2" },
+        { "type": "box", "pos": [5.6, 30.5, 2.6], "rot": [-4.6, 0, 4.6], "size": [1.1, 20.5, 1.1], "color": "#E0393E" },
+        { "type": "box", "pos": [0.4, 30.5, 2.6], "rot": [-4.6, 0, -4.6], "size": [1.1, 20.5, 1.1], "color": "#E0393E" },
+        { "type": "box", "pos": [5.6, 30.5, -2.6], "rot": [4.6, 0, 4.6], "size": [1.1, 20.5, 1.1], "color": "#E0393E" },
+        { "type": "box", "pos": [0.4, 30.5, -2.6], "rot": [4.6, 0, -4.6], "size": [1.1, 20.5, 1.1], "color": "#E0393E" },
+        { "type": "box", "pos": [3, 41, 0], "size": [6.5, 3, 6.5], "color": "#F2F2F2" },
+        { "type": "facade", "pos": [3, 41, 0], "size": [6.5, 1.6, 6.5], "spacing": [2, 1.2], "cell": [1.2, 0.9], "color": "#3A4250" },
+        { "type": "cone", "pos": [3, 53.5, 0], "size": [3.4, 22, 3.4], "color": "#E0393E" },
+        { "type": "box", "pos": [3, 48, 0], "size": [2.6, 1.2, 2.6], "color": "#F2F2F2" },
+        { "type": "box", "pos": [3, 56, 0], "size": [1.8, 1, 1.8], "color": "#F2F2F2" },
+        { "type": "cylinder", "pos": [3, 67, 0], "size": [0.3, 6, 0.3], "color": "#F2F2F2" }
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "utility_pole", "spacing": 20, "phase": 5, "offsetX": 9.4,
+      "parts": [
+        { "type": "cylinder", "pos": [0, 4, 0], "size": [0.3, 8, 0.3], "color": "#8E9196" },
+        { "type": "box", "pos": [0, 7.4, 0], "size": [0.15, 0.15, 1.6], "color": "#5A5D63" },
+        { "type": "cylinder", "pos": [0.3, 6.2, 0], "size": [0.5, 0.9, 0.5], "color": "#8E9196" }
+      ]
+    },
+    {
+      "id": "vending_machine", "spacing": 40, "phase": 15, "offsetX": 9.3,
+      "parts": [
+        { "type": "box", "pos": [0, 0.9, 0], "size": [0.8, 1.8, 1], "color": "#E0393E" },
+        { "type": "box", "pos": [-0.41, 1.1, 0], "size": [0.02, 1, 0.8], "color": "#E6E6E2" }
+      ]
+    },
+    {
+      "id": "small_tree", "spacing": 40, "phase": 35, "offsetX": 8.4,
+      "parts": [
+        { "type": "cylinder", "pos": [0, 1, 0], "size": [0.25, 2, 0.25], "color": "#5A3E25" },
+        { "type": "dome", "pos": [0, 2.8, 0], "size": [1.8, 1.6, 1.8], "color": "#4E8A45" }
+      ]
+    }
+  ]
+}
