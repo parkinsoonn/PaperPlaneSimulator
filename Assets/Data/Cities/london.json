@@ -1,0 +1,129 @@
+{
+  "id": "london",
+  "name": "London",
+  "environment": { "lotColor": "#6E6A62", "sidewalkColor": "#A3A39C", "fogColor": "#C4CAD0" },
+  "buildings": [
+    {
+      "id": "brick_terrace", "segments": 1, "weight": 4, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 7.5, 0], "size": [12, 15, 16], "color": "#9A4A3A" },
+        { "type": "box", "pos": [0, 2, 0], "size": [12.2, 4, 16.2], "color": "#EDEAE2" },
+        { "type": "facade", "pos": [0, 9.5, 0], "size": [12, 9, 16], "spacing": [3, 2.6], "cell": [2.5, 1.5], "offset": 0.04, "thickness": 0.1, "color": "#EDEAE2" },
+        { "type": "facade", "pos": [0, 9.5, 0], "size": [12, 9, 16], "spacing": [3, 2.6], "cell": [2.2, 1.2], "offset": 0.1, "color": "#2C3440" },
+        { "type": "facade", "pos": [0, 2, 0], "size": [12.2, 2.4, 16.2], "spacing": [3, 3.2], "cell": [1.8, 1.3], "color": "#2C3440" },
+        { "type": "box", "pos": [-6.2, 1.4, 0], "size": [0.2, 2.6, 1.4], "color": "#1F3A6B" },
+        { "type": "box", "pos": [-9.5, 0.5, 0], "size": [0.1, 1, 15.5], "color": "#1E1E1E" },
+        { "type": "wedge", "pos": [0, 16.3, 0], "size": [12, 2.6, 16], "color": "#4A4F55" },
+        { "type": "box", "pos": [0, 18, 5], "size": [1, 2.4, 1.6], "color": "#7A3A2E" },
+        { "type": "box", "pos": [0, 18, -5], "size": [1, 2.4, 1.6], "color": "#7A3A2E" }
+      ]
+    },
+    {
+      "id": "stucco_terrace", "segments": 1, "weight": 3, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 9, 0], "size": [13, 18, 16], "color": "#EDEAE2" },
+        { "type": "box", "pos": [0, 2, 0], "size": [13.2, 4, 16.2], "color": "#DCD8CE" },
+        { "type": "box", "pos": [0, 18.2, 0], "size": [13.6, 0.4, 16.6], "color": "#DCD8CE" },
+        { "type": "facade", "pos": [0, 11, 0], "size": [13, 12, 16], "spacing": [3, 2.6], "cell": [2.2, 1.2], "color": "#2C3440" },
+        { "type": "facade", "pos": [0, 2, 0], "size": [13.2, 2.4, 16.2], "spacing": [3, 3.2], "cell": [1.8, 1.3], "color": "#2C3440" },
+        { "type": "box", "pos": [-6.9, 7.3, 0], "size": [0.6, 0.15, 15], "color": "#1E1E1E" },
+        { "type": "cylinder", "pos": [-7.5, 2.2, -1.2], "size": [0.4, 4.4, 0.4], "color": "#FFFFFF" },
+        { "type": "cylinder", "pos": [-7.5, 2.2, 1.2], "size": [0.4, 4.4, 0.4], "color": "#FFFFFF" },
+        { "type": "box", "pos": [-7.2, 4.55, 0], "size": [1.4, 0.3, 3.2], "color": "#FFFFFF" },
+        { "type": "box", "pos": [-6.75, 1.5, 0], "size": [0.2, 2.8, 1.4], "color": "#1E1E1E" },
+        { "type": "box", "pos": [-9.5, 0.5, 0], "size": [0.1, 1, 15.5], "color": "#1E1E1E" }
+      ]
+    },
+    {
+      "id": "victorian_gables", "segments": 2, "weight": 2, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 10, 0], "size": [15, 20, 36], "color": "#9A4A3A" },
+        { "type": "box", "pos": [0, 7, 0], "size": [15.2, 0.4, 36.2], "color": "#D8CFC0" },
+        { "type": "box", "pos": [0, 14, 0], "size": [15.2, 0.4, 36.2], "color": "#D8CFC0" },
+        { "type": "facade", "pos": [0, 11, 0], "size": [15, 16, 36], "spacing": [3.2, 2.8], "cell": [2.4, 1.4], "color": "#2C3440" },
+        { "type": "facade", "pos": [0, 1.6, 0], "size": [15, 2.4, 36], "spacing": [3, 3.6], "cell": [1.8, 1.4], "color": "#2C3440" },
+        { "type": "box", "pos": [0, 20.3, 0], "size": [15, 0.6, 36], "color": "#4A4F55" },
+        { "type": "wedge", "pos": [0, 22.6, -12], "rot": [0, 90, 0], "size": [8, 4, 15], "color": "#4A4F55" },
+        { "type": "wedge", "pos": [0, 22.6, 0], "rot": [0, 90, 0], "size": [8, 4, 15], "color": "#4A4F55" },
+        { "type": "wedge", "pos": [0, 22.6, 12], "rot": [0, 90, 0], "size": [8, 4, 15], "color": "#4A4F55" },
+        { "type": "box", "pos": [3, 24, 6], "size": [1, 3, 1.4], "color": "#7A3A2E" },
+        { "type": "box", "pos": [3, 24, -6], "size": [1, 3, 1.4], "color": "#7A3A2E" }
+      ]
+    },
+    {
+      "id": "corner_pub", "segments": 1, "weight": 2, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 6, 0], "size": [13, 12, 16], "color": "#7A3A2E" },
+        { "type": "box", "pos": [0, 2, 0], "size": [13.2, 4, 16.2], "color": "#1F3B2D" },
+        { "type": "box", "pos": [0, 4.1, 0], "size": [13.3, 0.3, 16.3], "color": "#C9A44A" },
+        { "type": "facade", "pos": [0, 2, 0], "size": [13.2, 2.4, 16.2], "spacing": [3, 3], "cell": [2.2, 2.4], "color": "#2C3440" },
+        { "type": "box", "pos": [-7.6, 5.2, -6], "size": [0.1, 1, 1], "color": "#C9A44A" },
+        { "type": "facade", "pos": [0, 8.5, 0], "size": [13, 6, 16], "spacing": [3, 2.6], "cell": [2, 1.2], "color": "#2C3440" },
+        { "type": "wedge", "pos": [0, 13.4, 0], "size": [13, 2.8, 16], "color": "#4A4F55" }
+      ]
+    },
+    {
+      "id": "glass_office", "segments": 2, "weight": 1, "landmark": false,
+      "parts": [
+        { "type": "box", "pos": [0, 15, 0], "size": [15, 30, 32], "color": "#7D93A6" },
+        { "type": "facade", "pos": [0, 15, 0], "size": [15, 30, 32], "spacing": [3.5, 100], "cell": [0.3, 0], "thickness": 0.2, "color": "#5B6E80" },
+        { "type": "facade", "pos": [0, 15, 0], "size": [15, 30, 32], "spacing": [30, 4], "cell": [30, 0.25], "thickness": 0.18, "color": "#A9B8C4" },
+        { "type": "box", "pos": [1, 30.6, 0], "size": [11, 1.2, 26], "color": "#8E9AA5" }
+      ]
+    },
+    {
+      "id": "clock_tower", "segments": 1, "weight": 1, "landmark": true,
+      "parts": [
+        { "type": "box", "pos": [3, 22, 0], "size": [7, 44, 7], "color": "#C8B88E" },
+        { "type": "facade", "pos": [3, 20, 0], "size": [7, 34, 7], "spacing": [34, 1.4], "cell": [34, 0.25], "color": "#B5A57B" },
+        { "type": "cylinder", "pos": [-0.6, 41, 0], "rot": [0, 0, 90], "size": [4.4, 0.2, 4.4], "color": "#F2EEDF" },
+        { "type": "cylinder", "pos": [6.6, 41, 0], "rot": [0, 0, 90], "size": [4.4, 0.2, 4.4], "color": "#F2EEDF" },
+        { "type": "cylinder", "pos": [3, 41, -3.6], "rot": [90, 0, 0], "size": [4.4, 0.2, 4.4], "color": "#F2EEDF" },
+        { "type": "cylinder", "pos": [3, 41, 3.6], "rot": [90, 0, 0], "size": [4.4, 0.2, 4.4], "color": "#F2EEDF" },
+        { "type": "box", "pos": [-0.75, 41.6, 0], "size": [0.1, 1.4, 0.2], "color": "#222222" },
+        { "type": "box", "pos": [-0.75, 41, 0.5], "size": [0.1, 0.2, 1.1], "color": "#222222" },
+        { "type": "box", "pos": [3, 47, 0], "size": [7.6, 6, 7.6], "color": "#B5A57B" },
+        { "type": "facade", "pos": [3, 47, 0], "size": [7.6, 4, 7.6], "spacing": [4, 2], "cell": [3, 1], "color": "#3A3326" },
+        { "type": "box", "pos": [3, 51, 0], "size": [6, 2, 6], "color": "#4A5A50" },
+        { "type": "cone", "pos": [3, 58, 0], "size": [5, 12, 5], "color": "#3E4E45" },
+        { "type": "cylinder", "pos": [3, 64.9, 0], "size": [0.3, 1.8, 0.3], "color": "#C9A44A" }
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "black_lamp", "spacing": 20, "phase": 5, "offsetX": 9.2,
+      "parts": [
+        { "type": "cylinder", "pos": [0, 2.4, 0], "size": [0.2, 4.8, 0.2], "color": "#1E1E1E" },
+        { "type": "box", "pos": [0, 5, 0], "size": [0.45, 0.6, 0.45], "color": "#F2E3A0" },
+        { "type": "cone", "pos": [0, 5.45, 0], "size": [0.55, 0.3, 0.55], "color": "#1E1E1E" }
+      ]
+    },
+    {
+      "id": "tree", "spacing": 20, "phase": 15, "offsetX": 8.4,
+      "parts": [
+        { "type": "cylinder", "pos": [0, 1.4, 0], "size": [0.3, 2.8, 0.3], "color": "#5A3E25" },
+        { "type": "dome", "pos": [0, 4.05, 0], "size": [2.6, 1.3, 2.6], "color": "#3F6B35" },
+        { "type": "dome", "pos": [0, 2.75, 0], "rot": [180, 0, 0], "size": [2.6, 1.3, 2.6], "color": "#3A6331" }
+      ]
+    },
+    {
+      "id": "phone_box", "spacing": 60, "phase": 25, "offsetX": 8.8,
+      "parts": [
+        { "type": "box", "pos": [0, 1.3, 0], "size": [1, 2.6, 1], "color": "#C21F1F" },
+        { "type": "dome", "pos": [0, 2.72, 0], "size": [1, 0.25, 1], "color": "#C21F1F" },
+        { "type": "windows", "pos": [-0.52, 1.4, 0], "size": [0.05, 1.6, 0.8], "spacing": [0.4, 0.4], "cell": [0.32, 0.3], "color": "#DCE6EA" },
+        { "type": "windows", "pos": [0.52, 1.4, 0], "size": [0.05, 1.6, 0.8], "spacing": [0.4, 0.4], "cell": [0.32, 0.3], "color": "#DCE6EA" },
+        { "type": "windows", "pos": [0, 1.4, -0.52], "rot": [0, 90, 0], "size": [0.05, 1.6, 0.8], "spacing": [0.4, 0.4], "cell": [0.32, 0.3], "color": "#DCE6EA" },
+        { "type": "windows", "pos": [0, 1.4, 0.52], "rot": [0, 90, 0], "size": [0.05, 1.6, 0.8], "spacing": [0.4, 0.4], "cell": [0.32, 0.3], "color": "#DCE6EA" }
+      ]
+    },
+    {
+      "id": "post_box", "spacing": 80, "phase": 45, "offsetX": 7,
+      "parts": [
+        { "type": "cylinder", "pos": [0, 0.6, 0], "size": [0.5, 1.2, 0.5], "color": "#C21F1F" },
+        { "type": "dome", "pos": [0, 1.32, 0], "size": [0.55, 0.25, 0.55], "color": "#C21F1F" }
+      ]
+    }
+  ]
+}

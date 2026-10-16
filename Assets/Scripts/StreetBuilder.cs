@@ -19,6 +19,9 @@ public class StreetBuilder : MonoBehaviour
     public float fieldWidth = 150f;
     public float startZ = -30f;
 
+    public event System.Action StreetReset;                // before segments go back to the start
+    public event System.Action<Transform> SegmentPlaced;   // a segment was built, moved forward or reset
+
     Transform[] segments;
     bool moved;
 
@@ -30,6 +33,7 @@ public class StreetBuilder : MonoBehaviour
         {
             segments[i] = BuildSegment(i);
             segments[i].position = new Vector3(centerX, 0f, startZ + i * segmentLength);
+            SegmentPlaced?.Invoke(segments[i]);
         }
     }
 
@@ -98,15 +102,20 @@ public class StreetBuilder : MonoBehaviour
             {
                 segment.position += Vector3.forward * loopLength;
                 moved = true;
+                SegmentPlaced?.Invoke(segment);
             }
         }
     }
 
     void ResetSegments()
     {
+        StreetReset?.Invoke();
         float centerX = plane.CorridorCenterX;
         for (int i = 0; i < segments.Length; i++)
+        {
             segments[i].position = new Vector3(centerX, 0f, startZ + i * segmentLength);
+            SegmentPlaced?.Invoke(segments[i]);
+        }
         moved = false;
     }
 }

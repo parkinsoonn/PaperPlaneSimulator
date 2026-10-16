@@ -6,6 +6,7 @@ Shader "Custom/CurvedWorld"
     {
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         _Unlit("Unlit (0 = lit, 1 = unlit)", Float) = 0
+        _UseVertexColor("Use Vertex Color (0/1)", Float) = 0
     }
 
     SubShader
@@ -18,6 +19,7 @@ Shader "Custom/CurvedWorld"
         CBUFFER_START(UnityPerMaterial)
             half4 _BaseColor;
             half _Unlit;
+            half _UseVertexColor;
         CBUFFER_END
 
         float _CurveStrength;   // meters of drop per squared meter of horizontal distance
@@ -34,6 +36,7 @@ Shader "Custom/CurvedWorld"
         {
             float4 positionOS : POSITION;
             float3 normalOS : NORMAL;
+            half4 color : COLOR;
         };
         ENDHLSL
 
@@ -56,6 +59,7 @@ Shader "Custom/CurvedWorld"
                 float3 positionWS : TEXCOORD0;
                 float3 normalWS : TEXCOORD1;
                 float fogFactor : TEXCOORD2;
+                half3 color : TEXCOORD3;
             };
 
             Varyings vert(Attributes input)
@@ -66,12 +70,13 @@ Shader "Custom/CurvedWorld"
                 output.positionCS = TransformWorldToHClip(positionWS);
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 output.fogFactor = ComputeFogFactor(output.positionCS.z);
+                output.color = _BaseColor.rgb * (_UseVertexColor > 0.5 ? input.color.rgb : half3(1, 1, 1));
                 return output;
             }
 
             half4 frag(Varyings input) : SV_Target
             {
-                half3 color = _BaseColor.rgb;
+                half3 color = input.color;
                 if (_Unlit < 0.5)
                 {
                     float3 normalWS = normalize(input.normalWS);
