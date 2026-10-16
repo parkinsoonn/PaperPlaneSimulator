@@ -14,19 +14,19 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
+  m_Fog: 1
+  m_FogColor: {r: 0.78, g: 0.84, b: 0.9, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.01
-  m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_LinearFogStart: 50
+  m_LinearFogEnd: 150
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: b354871ae16609543bef01860ac806b5, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StarSpawner
   plane: {fileID: 1184159632}
   starMaterial: {fileID: 2100000, guid: 7abe467876c20b94080b5c508b13ebad, type: 2}
-  spacing: 25
+  spacing: 35
   spawnAhead: 120
   despawnBehind: 20
   starSize: 0.6
@@ -591,6 +591,7 @@ GameObject:
   m_Component:
   - component: {fileID: 660780931}
   - component: {fileID: 660780930}
+  - component: {fileID: 660780932}
   m_Layer: 0
   m_Name: Street
   m_TagString: Untagged
@@ -615,11 +616,13 @@ MonoBehaviour:
   laneLine: {fileID: 2100000, guid: d2d478e638727f64ab39f50c1c2f2f8f, type: 2}
   sidewalk: {fileID: 2100000, guid: 0bdb22fc429d4364295a8ff66d83cf96, type: 2}
   lot: {fileID: 2100000, guid: 67cbcc8d910f79f4ba5ed04fbf90f62d, type: 2}
+  field: {fileID: 2100000, guid: a91f7dab48b7e0349bd61142fd9b3dbe, type: 2}
   segmentLength: 20
   segmentCount: 14
   roadWidth: 12
   sidewalkWidth: 4
   lotWidth: 20
+  fieldWidth: 150
   startZ: -30
 --- !u!4 &660780931
 Transform:
@@ -636,6 +639,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &660780932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660780929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17ef9cf08b2fa60438824c402b5ce2e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CurvedWorld
+  curvature: 0.0015
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,10 +733,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fefe686a4fd1c5b44b01e8e2a6e3a541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PaperPlaneController
-  minLaunchSpeed: 8
-  maxLaunchSpeed: 28
+  minLaunchSpeed: 11
+  maxLaunchSpeed: 40
   maxChargeTime: 1.5
-  launchPitch: 30
+  launchPitch: 15
   pitchRate: 60
   turnRate: 70
   maxBank: 40
@@ -732,8 +748,9 @@ MonoBehaviour:
   invertMouseY: 0
   corridorHalfWidth: 10
   corridorSoftZone: 4
-  liftCoefficient: 0.12
-  dragCoefficient: 0.01
+  liftCoefficient: 0.06
+  dragCoefficient: 0.005
+  maxLiftAccel: 10.5
   velocityAlign: 2.5
   noseAlign: 1.5
 --- !u!54 &1184159633
@@ -891,7 +908,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1711150829}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

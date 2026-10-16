@@ -10,11 +10,13 @@ public class StreetBuilder : MonoBehaviour
     public Material laneLine;
     public Material sidewalk;
     public Material lot;
+    public Material field;               // grass beyond the lots (the flat Ground can't bend with the curved world)
     public float segmentLength = 20f;
     public int segmentCount = 14;
     public float roadWidth = 12f;
     public float sidewalkWidth = 4f;
     public float lotWidth = 20f;
+    public float fieldWidth = 150f;
     public float startZ = -30f;
 
     Transform[] segments;
@@ -39,6 +41,7 @@ public class StreetBuilder : MonoBehaviour
         float half = roadWidth * 0.5f;
         float sidewalkX = half + sidewalkWidth * 0.5f;
         float lotX = half + sidewalkWidth + lotWidth * 0.5f;
+        float fieldX = half + sidewalkWidth + lotWidth + fieldWidth * 0.5f;
         float midZ = segmentLength * 0.5f;
 
         // Surfaces sit slightly above the big Ground plane to avoid z-fighting.
@@ -48,6 +51,9 @@ public class StreetBuilder : MonoBehaviour
         Block("SidewalkRight", root, sidewalk, new Vector3(sidewalkX, 0.1f, midZ), new Vector3(sidewalkWidth, 0.2f, segmentLength), true);
         Block("LotLeftGround", root, lot, new Vector3(-lotX, -0.02f, midZ), new Vector3(lotWidth, 0.1f, segmentLength), true);
         Block("LotRightGround", root, lot, new Vector3(lotX, -0.02f, midZ), new Vector3(lotWidth, 0.1f, segmentLength), true);
+        // Grass: visual only, the big Ground collider underneath still catches landings.
+        Block("FieldLeft", root, field, new Vector3(-fieldX, -0.05f, midZ), new Vector3(fieldWidth, 0.1f, segmentLength), false);
+        Block("FieldRight", root, field, new Vector3(fieldX, -0.05f, midZ), new Vector3(fieldWidth, 0.1f, segmentLength), false);
 
         Anchor("LotLeft", root, new Vector3(-lotX, 0.03f, midZ));
         Anchor("LotRight", root, new Vector3(lotX, 0.03f, midZ));

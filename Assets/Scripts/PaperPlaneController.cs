@@ -5,10 +5,10 @@ using UnityEngine.InputSystem;
 public class PaperPlaneController : MonoBehaviour
 {
     [Header("Launch")]
-    public float minLaunchSpeed = 8f;
-    public float maxLaunchSpeed = 28f;
+    public float minLaunchSpeed = 11f;
+    public float maxLaunchSpeed = 40f;
     public float maxChargeTime = 1.5f;  // seconds for the power to sweep 0 -> 100 (then back down)
-    public float launchPitch = 30f;
+    public float launchPitch = 15f;
 
     [Header("Controls")]
     public float pitchRate = 60f;      // W/S, degrees per second
@@ -28,8 +28,9 @@ public class PaperPlaneController : MonoBehaviour
     public float corridorSoftZone = 4f;     // within this distance of the edge the plane is eased back
 
     [Header("Aerodynamics")]
-    public float liftCoefficient = 0.12f;   // lift accel = coef * forwardSpeed^2
-    public float dragCoefficient = 0.01f;   // drag accel = coef * speed^2
+    public float liftCoefficient = 0.06f;   // lift accel = coef * forwardSpeed^2
+    public float dragCoefficient = 0.005f;  // drag accel = coef * speed^2
+    public float maxLiftAccel = 10.5f;      // cap (just above 1 g) so a hard throw flies forward instead of looping up
     public float velocityAlign = 2.5f;      // how fast velocity follows the nose
     public float noseAlign = 1.5f;          // how fast the nose drops toward the flight path
 
@@ -201,7 +202,8 @@ public class PaperPlaneController : MonoBehaviour
         // which is what makes the plane eventually glide down.
         Vector3 liftDir = Vector3.Cross(vel / speed, right).normalized;
         float forwardSpeed = Mathf.Max(0f, Vector3.Dot(vel, forward));
-        rb.AddForce(liftDir * liftCoefficient * forwardSpeed * forwardSpeed, ForceMode.Acceleration);
+        float lift = Mathf.Min(liftCoefficient * forwardSpeed * forwardSpeed, maxLiftAccel);
+        rb.AddForce(liftDir * lift, ForceMode.Acceleration);
         rb.AddForce(-vel * dragCoefficient * speed, ForceMode.Acceleration);
     }
 

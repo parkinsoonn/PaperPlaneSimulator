@@ -102,10 +102,14 @@ public class LaunchPowerHUD : MonoBehaviour
         panel.anchorMin = Vector2.zero;
         panel.anchorMax = Vector2.one;
         panel.offsetMin = panel.offsetMax = Vector2.zero;
-        panel.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.85f);
+        panel.gameObject.AddComponent<RawImage>().texture = CreateGradient(
+            new Color(0.16f, 0.12f, 0.45f),    // top: deep indigo
+            new Color(0.85f, 0.3f, 0.6f),      // middle: magenta
+            new Color(1f, 0.6f, 0.22f));       // bottom: warm orange
         startGroup = panel.gameObject.AddComponent<CanvasGroup>();
 
-        CreateText("Title", panel, "KAĞIT UÇAK", 120, new Vector2(0f, 170f), new Vector2(1200f, 150f));
+        CreateText("Title", panel, "KAĞIT UÇAK", 120, new Vector2(0f, 170f), new Vector2(1200f, 150f))
+            .color = new Color(1f, 0.9f, 0.3f);
         CreateText("Controls", panel, "SPACE basılı tut: güç   •   Fare / WASD: yönlendir   •   Yıldızlar hız verir",
             30, new Vector2(0f, 40f), new Vector2(1400f, 50f));
         CreateButton("StartButton", panel, "BAŞLA", new Vector2(0f, -110f), () =>
@@ -113,17 +117,36 @@ public class LaunchPowerHUD : MonoBehaviour
             started = true;
             plane.enabled = true;
             startGroup.interactable = startGroup.blocksRaycasts = false;
-        });
+        }, new Color(1f, 0.78f, 0.2f));
+    }
+
+    // Vertical three-color gradient (top -> middle -> bottom) as a small stretched texture.
+    static Texture2D CreateGradient(Color top, Color middle, Color bottom)
+    {
+        const int height = 256;
+        var tex = new Texture2D(1, height, TextureFormat.RGBA32, false)
+        {
+            wrapMode = TextureWrapMode.Clamp,
+            filterMode = FilterMode.Bilinear
+        };
+        for (int y = 0; y < height; y++)
+        {
+            float t = y / (height - 1f);   // 0 = bottom, 1 = top
+            tex.SetPixel(0, y, t < 0.5f ? Color.Lerp(bottom, middle, t * 2f) : Color.Lerp(middle, top, (t - 0.5f) * 2f));
+        }
+        tex.Apply();
+        return tex;
     }
 
     // Light button with dark text; deselects itself after a click so Space doesn't re-press it.
-    void CreateButton(string name, Transform parent, string text, Vector2 position, UnityEngine.Events.UnityAction onClick)
+    void CreateButton(string name, Transform parent, string text, Vector2 position, UnityEngine.Events.UnityAction onClick,
+        Color? color = null)
     {
         var button = CreateRect(name, parent);
         button.anchoredPosition = position;
         button.sizeDelta = new Vector2(340f, 80f);
         var buttonImage = button.gameObject.AddComponent<Image>();
-        buttonImage.color = new Color(0.95f, 0.93f, 0.88f);
+        buttonImage.color = color ?? new Color(0.95f, 0.93f, 0.88f);
         var btn = button.gameObject.AddComponent<Button>();
         btn.targetGraphic = buttonImage;
         btn.onClick.AddListener(onClick);
