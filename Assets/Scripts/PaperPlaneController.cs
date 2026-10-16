@@ -16,6 +16,16 @@ public class PaperPlaneController : MonoBehaviour
     public float maxBank = 40f;
     public float minPitch = -60f;
     public float maxPitch = 45f;
+    public float turnResponse = 10f;   // how fast the turn ramps in/out, so A/D never snaps the heading
+
+    [Header("Mouse")]
+    public float mouseSensitivity = 0.004f;   // virtual stick units per pixel of mouse movement
+    public float mouseRecenter = 1.5f;        // per second; the stick drifts back so the plane levels out
+    public bool invertMouseY = false;
+
+    [Header("Corridor")]
+    public float corridorHalfWidth = 10f;   // street + sidewalk, centered on the launch point, running along +Z
+    public float corridorSoftZone = 4f;     // within this distance of the edge the plane is eased back
 
     [Header("Aerodynamics")]
     public float liftCoefficient = 0.12f;   // lift accel = coef * forwardSpeed^2
@@ -26,11 +36,14 @@ public class PaperPlaneController : MonoBehaviour
     Rigidbody rb;
     bool flying;
     float yaw, pitch, bank;
+    float turnAxis;      // smoothed A/D input, -1..1
+    Vector2 mouseStick;  // virtual joystick driven by mouse movement, -1..1
     float launchGrace;   // ignore touching the pad right after launch
 
     public float Charge { get; private set; }   // 0..1, swings back and forth while Space is held
     public bool IsCharging { get; private set; }
     public bool IsFlying => flying;
+    public float CorridorCenterX => startPosition.x;
     public bool HasLanded { get; private set; }  // landed and waiting for a restart
     public float FlightDistance { get; private set; }   // horizontal meters from the launch point; kept after landing
     Vector3 launchPoint;
@@ -52,8 +65,14 @@ public class PaperPlaneController : MonoBehaviour
 
     void Update()
     {
+        if (flying)
+        {
+            UpdateMouseStick();
+            return;
+        }
+
         var kb = Keyboard.current;
-        if (kb == null || flying || HasLanded) return;
+        if (kb == null || HasLanded) return;
 
         if (kb.spaceKey.wasPressedThisFrame)
         {
@@ -69,6 +88,21 @@ public class PaperPlaneController : MonoBehaviour
             Launch(Charge);
     }
 
+    // Mouse movement pushes a virtual stick; it eases back to center when the mouse stops.
+    void UpdateMouseStick()
+    {
+        var mouse = Mouse.current;
+        if (mouse != null && Cursor.lockState == CursorLockMode.Locked)
+        {
+            Vector2 delta = mouse.delta.ReadValue() * mouseSensitivity;
+            if (invertMouseY) delta.y = -delta.y;
+            mouseStick += delta;
+            mouseStick.x = Mathf.Clamp(mouseStick.x, -1f, 1f);
+            mouseStick.y = Mathf.Clamp(mouseStick.y, -1f, 1f);
+        }
+        mouseStick = Vector2.MoveTowards(mouseStick, Vector2.zero, mouseRecenter * Time.deltaTime);
+    }
+
     // Puts the plane back on the launch pad, ready for a new throw.
     public void ResetToPad()
     {
@@ -80,6 +114,8 @@ public class PaperPlaneController : MonoBehaviour
         FlightDistance = 0f;
         pitch = 0f;
         bank = 0f;
+        turnAxis = 0f;
+        mouseStick = Vector2.zero;
         yaw = startRotation.eulerAngles.y;
         rb.linearVelocity = Vector3.zero;
         rb.position = startPosition;
@@ -98,6 +134,8 @@ public class PaperPlaneController : MonoBehaviour
         FlightDistance = 0f;
         pitch = launchPitch;
         bank = 0f;
+        turnAxis = 0f;
+        mouseStick = Vector2.zero;
         rb.rotation = Quaternion.Euler(-pitch, yaw, 0f);
         rb.linearVelocity = rb.rotation * Vector3.forward * Mathf.Lerp(minLaunchSpeed, maxLaunchSpeed, charge);
     }
@@ -123,6 +161,8 @@ public class PaperPlaneController : MonoBehaviour
             if (kb.dKey.isPressed) turnInput += 1f;
             if (kb.aKey.isPressed) turnInput -= 1f;
         }
+        pitchInput = Mathf.Clamp(pitchInput + mouseStick.y, -1f, 1f);
+        turnInput = Mathf.Clamp(turnInput + mouseStick.x, -1f, 1f);
 
         Vector3 vel = rb.linearVelocity;
         float speed = vel.magnitude;
@@ -134,9 +174,17 @@ public class PaperPlaneController : MonoBehaviour
             pitch = Mathf.MoveTowards(pitch, pathAngle, noseAlign * Mathf.Abs(pitch - pathAngle) * dt);
         }
 
+        // Near the street edge, steer back toward the middle (only while still drifting outward).
+        float offset = rb.position.x - CorridorCenterX;
+        float edge = Mathf.InverseLerp(corridorHalfWidth - corridorSoftZone, corridorHalfWidth, Mathf.Abs(offset));
+        if (edge > 0f && (Mathf.Sign(vel.x) == Mathf.Sign(offset) || edge >= 1f))
+            turnInput = Mathf.Clamp(turnInput - Mathf.Sign(offset) * edge * 1.5f, -1f, 1f);
+
+        turnAxis = Mathf.MoveTowards(turnAxis, turnInput, turnResponse * dt);
+
         pitch = Mathf.Clamp(pitch + pitchInput * pitchRate * dt, minPitch, maxPitch);
-        yaw += turnInput * turnRate * dt;
-        bank = Mathf.Lerp(bank, -turnInput * maxBank, 4f * dt);
+        yaw += turnAxis * turnRate * dt;
+        bank = Mathf.Lerp(bank, -turnAxis * maxBank, 8f * dt);
 
         Quaternion rot = Quaternion.Euler(-pitch, yaw, bank);
         rb.MoveRotation(rot);
@@ -155,6 +203,15 @@ public class PaperPlaneController : MonoBehaviour
         float forwardSpeed = Mathf.Max(0f, Vector3.Dot(vel, forward));
         rb.AddForce(liftDir * liftCoefficient * forwardSpeed * forwardSpeed, ForceMode.Acceleration);
         rb.AddForce(-vel * dragCoefficient * speed, ForceMode.Acceleration);
+    }
+
+    // Speed pickup: adds speed along the current flight direction.
+    public void AddBoost(float amount)
+    {
+        if (!flying) return;
+        Vector3 vel = rb.linearVelocity;
+        if (vel.sqrMagnitude < 0.01f) vel = transform.forward;
+        rb.linearVelocity += vel.normalized * amount;
     }
 
     void OnCollisionEnter(Collision collision) => Land();
