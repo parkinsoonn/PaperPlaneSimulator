@@ -16,7 +16,7 @@ public class StarSpawner : MonoBehaviour
 
     public PaperPlaneController plane;
     public Material starMaterial;
-    public float spacing = 25f;          // meters between stars along the street
+    public float spacing = 35f;          // meters between stars along the street
     public float spawnAhead = 120f;
     public float despawnBehind = 20f;
     public float starSize = 0.6f;
