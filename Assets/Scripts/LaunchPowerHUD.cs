@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
@@ -20,6 +21,9 @@ public class LaunchPowerHUD : MonoBehaviour
     CanvasGroup resultGroup;
     Text resultDistance;
     float landedTime = -1f;
+    bool cursorReleased;   // Esc frees the cursor until the next click
+    CanvasGroup startGroup;
+    bool started;          // false while the intro screen is up
 
     void Start()
     {
@@ -66,6 +70,8 @@ public class LaunchPowerHUD : MonoBehaviour
         labelRect.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.8f);
 
         CreateResultScreen(canvasGo.transform);
+        CreateStartScreen(canvasGo.transform);
+        plane.enabled = false;
     }
 
     // Full-screen dimmed panel shown after landing: distance and a replay button.
@@ -82,20 +88,50 @@ public class LaunchPowerHUD : MonoBehaviour
         CreateText("Title", panel, "Gidilen mesafe", 36, new Vector2(0f, 200f), new Vector2(600f, 50f));
         resultDistance = CreateText("Distance", panel, "", 110, new Vector2(0f, 110f), new Vector2(800f, 130f));
 
-        var button = CreateRect("ReplayButton", panel);
-        button.anchoredPosition = new Vector2(0f, -110f);
+        CreateButton("ReplayButton", panel, "TEKRAR OYNA", new Vector2(0f, -110f), () =>
+        {
+            plane.ResetToPad();
+            SetResultVisible(0f);
+        });
+    }
+
+    // Intro screen shown on Play; the plane stays disabled until BAŞLA is pressed.
+    void CreateStartScreen(Transform canvas)
+    {
+        var panel = CreateRect("StartScreen", canvas);
+        panel.anchorMin = Vector2.zero;
+        panel.anchorMax = Vector2.one;
+        panel.offsetMin = panel.offsetMax = Vector2.zero;
+        panel.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.85f);
+        startGroup = panel.gameObject.AddComponent<CanvasGroup>();
+
+        CreateText("Title", panel, "KAĞIT UÇAK", 120, new Vector2(0f, 170f), new Vector2(1200f, 150f));
+        CreateText("Controls", panel, "SPACE basılı tut: güç   •   Fare / WASD: yönlendir   •   Yıldızlar hız verir",
+            30, new Vector2(0f, 40f), new Vector2(1400f, 50f));
+        CreateButton("StartButton", panel, "BAŞLA", new Vector2(0f, -110f), () =>
+        {
+            started = true;
+            plane.enabled = true;
+            startGroup.interactable = startGroup.blocksRaycasts = false;
+        });
+    }
+
+    // Light button with dark text; deselects itself after a click so Space doesn't re-press it.
+    void CreateButton(string name, Transform parent, string text, Vector2 position, UnityEngine.Events.UnityAction onClick)
+    {
+        var button = CreateRect(name, parent);
+        button.anchoredPosition = position;
         button.sizeDelta = new Vector2(340f, 80f);
         var buttonImage = button.gameObject.AddComponent<Image>();
         buttonImage.color = new Color(0.95f, 0.93f, 0.88f);
         var btn = button.gameObject.AddComponent<Button>();
         btn.targetGraphic = buttonImage;
+        btn.onClick.AddListener(onClick);
         btn.onClick.AddListener(() =>
         {
-            plane.ResetToPad();
-            SetResultVisible(0f);
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
         });
-        var buttonText = CreateText("Text", button, "TEKRAR OYNA", 34, Vector2.zero, Vector2.zero);
+        var buttonText = CreateText("Text", button, text, 34, Vector2.zero, Vector2.zero);
         var buttonTextRect = buttonText.rectTransform;
         buttonTextRect.anchorMin = Vector2.zero;
         buttonTextRect.anchorMax = Vector2.one;
@@ -151,6 +187,20 @@ public class LaunchPowerHUD : MonoBehaviour
         textRect.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.8f);
     }
 
+    // Cursor is hidden and locked to the game (mouse steers the plane), except on the intro and
+    // result screens where the buttons must be clickable.
+    void UpdateCursor()
+    {
+        var kb = Keyboard.current;
+        var mouse = Mouse.current;
+        if (kb != null && kb.escapeKey.wasPressedThisFrame) cursorReleased = true;
+        else if (cursorReleased && mouse != null && mouse.leftButton.wasPressedThisFrame) cursorReleased = false;
+
+        bool locked = started && resultGroup.alpha <= 0f && !cursorReleased;
+        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !locked;
+    }
+
     static RectTransform CreateRect(string name, Transform parent)
     {
         var go = new GameObject(name, typeof(RectTransform));
@@ -162,8 +212,11 @@ public class LaunchPowerHUD : MonoBehaviour
     {
         if (plane == null || group == null) return;
 
-        // Visible only while waiting on the pad.
-        float targetAlpha = plane.IsFlying || plane.HasLanded ? 0f : 1f;
+        UpdateCursor();
+        startGroup.alpha = Mathf.MoveTowards(startGroup.alpha, started ? 0f : 1f, 3f * Time.unscaledDeltaTime);
+
+        // Visible only while waiting on the pad (after the intro screen).
+        float targetAlpha = !started || plane.IsFlying || plane.HasLanded ? 0f : 1f;
         group.alpha = Mathf.MoveTowards(group.alpha, targetAlpha, 4f * Time.unscaledDeltaTime);
 
         float c = plane.Charge;
