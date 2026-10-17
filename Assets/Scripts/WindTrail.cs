@@ -28,18 +28,40 @@ public class WindTrail : MonoBehaviour
 
         var trail = go.AddComponent<TrailRenderer>();
         trail.sharedMaterial = material;
-        trail.time = trailTime;
         trail.minVertexDistance = 0.1f;
-        trail.widthCurve = AnimationCurve.Linear(0f, width, 1f, 0f);
-        var gradient = new Gradient();
-        gradient.SetKeys(
-            new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
-            new[] { new GradientAlphaKey(alpha, 0f), new GradientAlphaKey(0f, 1f) });
-        trail.colorGradient = gradient;
+        ApplyStyle(trail, null, width, trailTime);
         trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         trail.receiveShadows = false;
         trail.emitting = false;
         return trail;
+    }
+
+    // Shop effect: colors along the streak (null = the classic faint white), thickness and length.
+    public void SetStyle(Gradient colors, float trailWidth, float time)
+    {
+        foreach (var trail in trails) ApplyStyle(trail, colors, trailWidth, time);
+    }
+
+    // Moves the streaks to another plane shape's wingtips (right tip given, left is mirrored).
+    public void SetWingtips(Vector3 rightTip)
+    {
+        trails[0].transform.localPosition = rightTip;
+        trails[1].transform.localPosition = new Vector3(-rightTip.x, rightTip.y, rightTip.z);
+        foreach (var trail in trails) trail.Clear();
+    }
+
+    void ApplyStyle(TrailRenderer trail, Gradient colors, float trailWidth, float time)
+    {
+        trail.time = time;
+        trail.widthCurve = AnimationCurve.Linear(0f, trailWidth, 1f, 0f);
+        if (colors == null)
+        {
+            colors = new Gradient();
+            colors.SetKeys(
+                new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(alpha, 0f), new GradientAlphaKey(0f, 1f) });
+        }
+        trail.colorGradient = colors;
     }
 
     void Update()

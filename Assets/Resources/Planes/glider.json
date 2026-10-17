@@ -1,0 +1,18 @@
+{
+  "id": "glider",
+  "name": "Planör",
+  "wingtip": [0.95, 0.595, -0.75],
+  "panels": [
+    { "name": "keel", "points": [0, 0.5, 0.7,  0, 0.5, -0.95,  0, 0, -0.7,  0, 0, -0.1], "thickness": 0.04, "mat": "shade", "mirror": false },
+    { "name": "wing_inner", "points": [0, 0.5, 0.8,  0.78, 0.578, 0.45,  0.78, 0.578, -0.75,  0, 0.5, -1.05], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "wing_tip", "points": [0.78, 0.578, 0.45,  0.95, 0.595, 0.0,  0.95, 0.595, -0.75,  0.78, 0.578, -0.75], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "winglet", "points": [0.95, 0.595, 0.0,  0.95, 0.595, -0.75,  0.97, 0.8, -0.75,  0.97, 0.8, -0.35], "thickness": 0.03, "mat": "accent", "mirror": true },
+    { "name": "nose_fold1", "points": [0, 0.55, 1.25,  0.16, 0.55, 0.95,  0.2, 0.55, 0.2,  0, 0.55, 0.2], "thickness": 0.04, "mat": "paper", "mirror": true },
+    { "name": "nose_fold2", "points": [0, 0.6, 1.0,  0.12, 0.6, 0.8,  0.14, 0.6, 0.2,  0, 0.6, 0.2], "thickness": 0.04, "mat": "paper", "mirror": true },
+    { "name": "nose_fold3", "points": [0, 0.65, 0.78,  0.08, 0.65, 0.65,  0.09, 0.65, 0.2,  0, 0.65, 0.2], "thickness": 0.04, "mat": "paper", "mirror": true },
+    { "name": "nose_riser1", "points": [0, 0.5, 1.25,  0.16, 0.5, 0.95,  0.16, 0.55, 0.95,  0, 0.55, 1.25], "thickness": 0.03, "mat": "shade", "mirror": true },
+    { "name": "nose_riser2", "points": [0, 0.55, 1.0,  0.12, 0.55, 0.8,  0.12, 0.6, 0.8,  0, 0.6, 1.0], "thickness": 0.03, "mat": "shade", "mirror": true },
+    { "name": "nose_riser3", "points": [0, 0.6, 0.78,  0.08, 0.6, 0.65,  0.08, 0.65, 0.65,  0, 0.65, 0.78], "thickness": 0.03, "mat": "shade", "mirror": true },
+    { "name": "nose_under", "points": [0, 0.5, 1.25,  0.16, 0.5, 0.95,  0.2, 0.5, 0.8,  0, 0.5, 0.8], "thickness": 0.03, "mat": "shade", "mirror": true }
+  ]
+}

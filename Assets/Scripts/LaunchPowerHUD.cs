@@ -5,7 +5,7 @@ using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 // Power bar at the bottom center, live distance at the top, a result screen with a replay button,
-// the intro screen, and the Esc pause menu (resume, main menu, volume).
+// the intro screen (start, shop, gold), and the Esc pause menu (resume, main menu, volume).
 public class LaunchPowerHUD : MonoBehaviour
 {
     public PaperPlaneController plane;
@@ -22,7 +22,11 @@ public class LaunchPowerHUD : MonoBehaviour
     CanvasGroup resultGroup;
     Text resultTitle;
     Text resultDistance;
+    Text resultGold;
+    int earnedGold;        // this throw's star gold, paid into the wallet once on landing
     float landedTime = -1f;
+    Text startGoldLabel;
+    ShopMenu shop;
     CanvasGroup startGroup;
     bool started;          // false while the intro screen is up
     CanvasGroup pauseGroup;
@@ -75,6 +79,8 @@ public class LaunchPowerHUD : MonoBehaviour
 
         CreateResultScreen(canvasGo.transform);
         CreateStartScreen(canvasGo.transform);
+        shop = gameObject.AddComponent<ShopMenu>();
+        shop.Build(canvasGo.transform);
         CreatePauseMenu(canvasGo.transform);
         plane.enabled = false;
     }
@@ -191,6 +197,8 @@ public class LaunchPowerHUD : MonoBehaviour
 
         resultTitle = CreateText("Title", panel, "Gidilen mesafe", 36, new Vector2(0f, 200f), new Vector2(800f, 60f));
         resultDistance = CreateText("Distance", panel, "", 110, new Vector2(0f, 110f), new Vector2(800f, 130f));
+        resultGold = CreateText("Gold", panel, "", 40, new Vector2(0f, 10f), new Vector2(800f, 60f));
+        resultGold.color = new Color(1f, 0.78f, 0.2f);
 
         CreateButton("ReplayButton", panel, "TEKRAR OYNA", new Vector2(0f, -110f), () =>
         {
@@ -222,6 +230,11 @@ public class LaunchPowerHUD : MonoBehaviour
             plane.enabled = true;
             startGroup.interactable = startGroup.blocksRaycasts = false;
         }, new Color(1f, 0.78f, 0.2f));
+        CreateButton("ShopButton", panel, "MAĞAZA", new Vector2(0f, -220f), () => shop.Open());
+
+        startGoldLabel = CreateText("Gold", panel, "", 40, new Vector2(620f, 470f), new Vector2(500f, 60f));
+        startGoldLabel.alignment = TextAnchor.MiddleRight;
+        startGoldLabel.color = new Color(1f, 0.9f, 0.3f);
     }
 
     // Vertical three-color gradient (top -> middle -> bottom) as a small stretched texture.
@@ -243,7 +256,7 @@ public class LaunchPowerHUD : MonoBehaviour
     }
 
     // Light button with dark text; deselects itself after a click so Space doesn't re-press it.
-    void CreateButton(string name, Transform parent, string text, Vector2 position, UnityEngine.Events.UnityAction onClick,
+    internal static Button CreateButton(string name, Transform parent, string text, Vector2 position, UnityEngine.Events.UnityAction onClick,
         Color? color = null)
     {
         var button = CreateRect(name, parent);
@@ -264,6 +277,7 @@ public class LaunchPowerHUD : MonoBehaviour
         buttonTextRect.anchorMax = Vector2.one;
         buttonText.color = new Color(0.15f, 0.15f, 0.15f);
         Destroy(buttonText.GetComponent<Outline>());
+        return btn;
     }
 
     void SetResultVisible(float alpha)
@@ -273,7 +287,7 @@ public class LaunchPowerHUD : MonoBehaviour
     }
 
     // Centered white bold text with an outline, positioned relative to the parent's center.
-    static Text CreateText(string name, Transform parent, string text, int size, Vector2 position, Vector2 boxSize)
+    internal static Text CreateText(string name, Transform parent, string text, int size, Vector2 position, Vector2 boxSize)
     {
         var rect = CreateRect(name, parent);
         rect.anchoredPosition = position;
@@ -326,7 +340,7 @@ public class LaunchPowerHUD : MonoBehaviour
         Cursor.visible = !locked;
     }
 
-    static RectTransform CreateRect(string name, Transform parent)
+    internal static RectTransform CreateRect(string name, Transform parent)
     {
         var go = new GameObject(name, typeof(RectTransform));
         go.transform.SetParent(parent, false);
@@ -338,6 +352,7 @@ public class LaunchPowerHUD : MonoBehaviour
         if (plane == null || group == null) return;
 
         UpdateCursor();
+        startGoldLabel.text = $"ALTIN: {PlayerWallet.Gold}";
         startGroup.alpha = Mathf.MoveTowards(startGroup.alpha, started ? 0f : 1f, 3f * Time.unscaledDeltaTime);
 
         // Visible only while waiting on the pad (after the intro screen).
@@ -365,8 +380,14 @@ public class LaunchPowerHUD : MonoBehaviour
             if (resultGroup.alpha > 0f) SetResultVisible(0f);
             return;
         }
-        if (landedTime < 0f) landedTime = Time.unscaledTime;
+        if (landedTime < 0f)
+        {
+            landedTime = Time.unscaledTime;
+            earnedGold = plane.ThrowGold;
+            PlayerWallet.AddGold(earnedGold);
+        }
         resultDistance.text = $"{meters} m";
+        resultGold.text = $"+{earnedGold} ALTIN   (Toplam {PlayerWallet.Gold})";
         resultTitle.text = plane.Crashed ? "ÇARPTIN!  Gidilen mesafe" : "Gidilen mesafe";
         resultTitle.color = plane.Crashed ? new Color(1f, 0.35f, 0.3f) : Color.white;
         if (Time.unscaledTime - landedTime >= resultDelay)

@@ -48,6 +48,7 @@ public class PaperPlaneController : MonoBehaviour
     public bool HasLanded { get; private set; }  // landed and waiting for a restart
     public bool Crashed { get; private set; }    // the flight ended by hitting a vehicle or building
     public float FlightDistance { get; private set; }   // meters along the street since launch; kept after landing
+    public int ThrowGold { get; private set; }          // gold from stars collected this throw; kept after landing
     public StreetBuilder street;                 // follows the street's path for distance and edge push-back
     Vector3 launchPoint;
     float launchProgress;
@@ -119,6 +120,7 @@ public class PaperPlaneController : MonoBehaviour
         IsCharging = false;
         Charge = 0f;
         FlightDistance = 0f;
+        ThrowGold = 0;
         pitch = 0f;
         bank = 0f;
         turnAxis = 0f;
@@ -140,6 +142,7 @@ public class PaperPlaneController : MonoBehaviour
         hasLaunched = true;
         Crashed = false;
         FlightDistance = 0f;
+        ThrowGold = 0;
         pathHint = 0;
         if (HasPath) launchProgress = street.Path.Progress(rb.position, ref pathHint);
         pitch = launchPitch;
@@ -243,7 +246,13 @@ public class PaperPlaneController : MonoBehaviour
         rb.linearVelocity += vel.normalized * amount;
     }
 
-    bool HasPath => street != null && street.Path != null;
+    // Star pickup: gold is counted per throw and paid out by the HUD on landing.
+    public void AddGold(int amount)
+    {
+        if (flying) ThrowGold += amount;
+    }
+
+    bool HasPath =>street != null && street.Path != null;
 
     // Hitting a vehicle or a building ends the flight on the spot.
     public void Crash()

@@ -12,6 +12,7 @@ public class StarSpawner : MonoBehaviour
         public Color color;
         public float weight;   // relative chance
         public float boost;    // m/s added on pickup
+        public int gold;       // shop gold earned on pickup
     }
 
     public PaperPlaneController plane;
@@ -29,9 +30,9 @@ public class StarSpawner : MonoBehaviour
     public float openingHeight = 12f;    // since the plane climbs right after the throw
     public StarType[] types =
     {
-        new StarType { name = "Blue",   color = new Color(0.25f, 0.55f, 1f),  weight = 78f, boost = 6f },
-        new StarType { name = "Yellow", color = new Color(1f, 0.85f, 0.15f),  weight = 18f, boost = 12f },
-        new StarType { name = "Red",    color = new Color(1f, 0.2f, 0.15f),   weight = 4f,  boost = 24f },
+        new StarType { name = "Blue",   color = new Color(0.25f, 0.55f, 1f),  weight = 78f, boost = 6f,  gold = 1 },
+        new StarType { name = "Yellow", color = new Color(1f, 0.85f, 0.15f),  weight = 18f, boost = 12f, gold = 3 },
+        new StarType { name = "Red",    color = new Color(1f, 0.2f, 0.15f),   weight = 4f,  boost = 24f, gold = 6 },
     };
 
     readonly List<(GameObject star, float s)> stars = new List<(GameObject, float)>();
@@ -124,6 +125,7 @@ public class StarSpawner : MonoBehaviour
         trigger.radius = 1.6f;   // a bit generous so stars are easy to grab
         var pickup = go.AddComponent<StarPickup>();
         pickup.boost = type.boost;
+        pickup.gold = type.gold;
         pickup.glow = glow;
         stars.Add((go, s));
     }

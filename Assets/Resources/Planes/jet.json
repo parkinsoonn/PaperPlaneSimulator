@@ -1,0 +1,14 @@
+{
+ "id": "jet",
+ "name": "Avcı",
+ "wingtip": [0.84, 0.43, -1.0],
+ "panels": [
+  { "name": "spine_nose", "points": [0, 0.36, 1.22, 0, 0, 0.3, 0, 0.58, 0.5], "thickness": 0.05, "mat": "shade", "mirror": false },
+  { "name": "spine_body", "points": [0, 0.58, 0.5, 0, 0, 0.3, 0, 0, -1.0, 0, 0.58, -1.0], "thickness": 0.05, "mat": "shade", "mirror": false },
+  { "name": "delta_right", "points": [0, 0.58, 0.5, 0.84, 0.43, -1.0, 0, 0.58, -1.0], "thickness": 0.03, "mat": "paper", "mirror": true },
+  { "name": "strake_right", "points": [0, 0.36, 1.22, 0, 0.58, 0.5, 0.21, 0.5425, 0.125], "thickness": 0.03, "mat": "paper", "mirror": true },
+  { "name": "belly_right", "points": [0, 0, 0.3, 0, 0, -1.0, 0.42, 0.505, -1.0], "thickness": 0.03, "mat": "shade", "mirror": true },
+  { "name": "canard_right", "points": [0, 0.46, 0.95, 0, 0.54, 0.75, 0.38, 0.50, 0.62], "thickness": 0.025, "mat": "paper", "mirror": true },
+  { "name": "tail_fin_right", "points": [0.2, 0.544, -0.45, 0.2, 0.544, -1.0, 0.34, 0.80, -1.0], "thickness": 0.03, "mat": "accent", "mirror": true }
+ ]
+}
