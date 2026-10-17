@@ -15,7 +15,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
   m_Fog: 1
-  m_FogColor: {r: 0.78, g: 0.84, b: 0.9, a: 1}
+  m_FogColor: {r: 0.7512579, g: 0.8102697, b: 0.86993396, a: 1}
   m_FogMode: 1
   m_FogDensity: 0.01
   m_LinearFogStart: 50
@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: b354871ae16609543bef01860ac806b5, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cc8596ec938edc748871480b5da869c2, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarSpawner
   plane: {fileID: 1184159632}
+  street: {fileID: 660780930}
   starMaterial: {fileID: 2100000, guid: 7abe467876c20b94080b5c508b13ebad, type: 2}
   glowMaterial: {fileID: 2100000, guid: 3ee6d28fd3987b8479a4eade6d8de0de, type: 2}
   glowIntensity: 1.6
@@ -157,7 +158,7 @@ MonoBehaviour:
   spawnAhead: 120
   despawnBehind: 20
   starSize: 0.6
-  halfWidth: 9
+  halfWidth: 11
   openingDistance: 150
   openingHeight: 12
   types:
@@ -276,7 +277,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.122183256, y: 0, z: 0, w: 0.9925076}
-  m_LocalPosition: {x: 0, y: 3.05, z: -22}
+  m_LocalPosition: {x: 0, y: 5.65, z: -22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -357,6 +358,7 @@ GameObject:
   - component: {fileID: 388848236}
   - component: {fileID: 388848235}
   - component: {fileID: 388848234}
+  - component: {fileID: 388848238}
   m_Layer: 0
   m_Name: LaunchPad
   m_TagString: Untagged
@@ -389,7 +391,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a32cbc69dc6d97b4e85acfcc88384183, type: 2}
+  - {fileID: 2100000, guid: 768ce52518fe55148b7bc8fa9d94b322, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -432,8 +434,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 6.4, y: 3.1, z: 8.4}
+  m_Center: {x: 0, y: 1.55, z: 0}
 --- !u!33 &388848236
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -441,7 +443,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388848233}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!4 &388848237
 Transform:
   m_ObjectHideFlags: 0
@@ -451,12 +453,26 @@ Transform:
   m_GameObject: {fileID: 388848233}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.25, z: -15}
-  m_LocalScale: {x: 4, y: 0.5, z: 6}
+  m_LocalPosition: {x: 0, y: 0, z: -15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &388848238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388848233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e4986f4b896284dad07e0dde2529ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JsonModel
+  model: {fileID: 4900000, guid: f111ebc9e5bf4274c96561107175260c, type: 3}
+  material: {fileID: 2100000, guid: 768ce52518fe55148b7bc8fa9d94b322, type: 2}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,6 +632,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StreetBuilder
   plane: {fileID: 1184159632}
+  ground: {fileID: 1711150833}
   asphalt: {fileID: 2100000, guid: 77379e1d931ffe647b2a094a79f8477f, type: 2}
   laneLine: {fileID: 2100000, guid: d2d478e638727f64ab39f50c1c2f2f8f, type: 2}
   sidewalk: {fileID: 2100000, guid: 0bdb22fc429d4364295a8ff66d83cf96, type: 2}
@@ -623,11 +640,19 @@ MonoBehaviour:
   field: {fileID: 2100000, guid: a91f7dab48b7e0349bd61142fd9b3dbe, type: 2}
   segmentLength: 20
   segmentCount: 14
-  roadWidth: 12
+  roadWidth: 16
+  laneWidth: 4
   sidewalkWidth: 4
   lotWidth: 20
   fieldWidth: 150
   startZ: -30
+  curveSteps: 4
+  groundSnap: 100
+  straightStart: 8
+  straightRun: {x: 6, y: 16}
+  bendSegments: {x: 4, y: 6}
+  bendAngle: {x: 30, y: 60}
+  maxDeviation: 60
 --- !u!4 &660780931
 Transform:
   m_ObjectHideFlags: 0
@@ -684,6 +709,8 @@ MonoBehaviour:
   sidewalkHeight: 0.2
   lotHeight: 0.03
   fogBlendSpeed: 0.5
+  skyHorizon: {r: 0.7512579, g: 0.8102697, b: 0.86993396, a: 1}
+  skyTintBlend: 0.6
   maxPropsPerSide: 10
 --- !u!1 &832575517
 GameObject:
@@ -779,13 +806,14 @@ MonoBehaviour:
   mouseSensitivity: 0.004
   mouseRecenter: 1.5
   invertMouseY: 0
-  corridorHalfWidth: 10
+  corridorHalfWidth: 12
   corridorSoftZone: 4
   liftCoefficient: 0.06
   dragCoefficient: 0.005
   maxLiftAccel: 10.5
   velocityAlign: 2.5
   noseAlign: 1.5
+  street: {fileID: 660780930}
 --- !u!54 &1184159633
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -843,7 +871,7 @@ Transform:
   m_GameObject: {fileID: 1184159631}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.55, z: -15}
+  m_LocalPosition: {x: 0, y: 3.15, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -867,6 +895,69 @@ MonoBehaviour:
   trailTime: 0.35
   width: 0.035
   alpha: 0.3
+--- !u!1 &1235921130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1235921132}
+  - component: {fileID: 1235921131}
+  m_Layer: 0
+  m_Name: Traffic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1235921131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235921130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e018758df6ab747a591b880708b654, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrafficSpawner
+  plane: {fileID: 1184159632}
+  street: {fileID: 660780930}
+  city: {fileID: 660780933}
+  vehicles: {fileID: 4900000, guid: e6ecd131cba6aa643a5da5f516e13178, type: 3}
+  material: {fileID: 2100000, guid: 768ce52518fe55148b7bc8fa9d94b322, type: 2}
+  oncomingLanes:
+  - -6
+  - -2
+  sameWayLanes:
+  - 2
+  - 6
+  oncomingSpeed: {x: 10, y: 18}
+  sameWaySpeed: {x: 5, y: 9}
+  spacing: {x: 18, y: 45}
+  spawnAhead: 190
+  despawnBehind: 30
+  clearStart: 60
+  keepGap: 6
+  maxVehicles: 24
+--- !u!4 &1235921132
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235921130}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1400243445
 GameObject:
   m_ObjectHideFlags: 0
@@ -1147,3 +1238,4 @@ SceneRoots:
   - {fileID: 1400243447}
   - {fileID: 660780931}
   - {fileID: 202365402}
+  - {fileID: 1235921132}

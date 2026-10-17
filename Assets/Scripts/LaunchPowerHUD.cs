@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
-// Power bar at the bottom center, live distance at the top, and a result screen with a replay button.
+// Power bar at the bottom center, live distance at the top, a result screen with a replay button,
+// the intro screen, and the Esc pause menu (resume, main menu, volume).
 public class LaunchPowerHUD : MonoBehaviour
 {
     public PaperPlaneController plane;
@@ -19,11 +20,14 @@ public class LaunchPowerHUD : MonoBehaviour
     CanvasGroup distanceGroup;
     Text distanceLabel;
     CanvasGroup resultGroup;
+    Text resultTitle;
     Text resultDistance;
     float landedTime = -1f;
-    bool cursorReleased;   // Esc frees the cursor until the next click
     CanvasGroup startGroup;
     bool started;          // false while the intro screen is up
+    CanvasGroup pauseGroup;
+    bool paused;           // Esc menu is open; the game is frozen
+    Text volumeLabel;
 
     void Start()
     {
@@ -71,8 +75,108 @@ public class LaunchPowerHUD : MonoBehaviour
 
         CreateResultScreen(canvasGo.transform);
         CreateStartScreen(canvasGo.transform);
+        CreatePauseMenu(canvasGo.transform);
         plane.enabled = false;
     }
+
+    // Esc menu: resume, back to the intro screen, and the master volume slider.
+    void CreatePauseMenu(Transform canvas)
+    {
+        var panel = CreateRect("PauseMenu", canvas);
+        panel.anchorMin = Vector2.zero;
+        panel.anchorMax = Vector2.one;
+        panel.offsetMin = panel.offsetMax = Vector2.zero;
+        panel.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.6f);
+        pauseGroup = panel.gameObject.AddComponent<CanvasGroup>();
+
+        var box = CreateRect("Box", panel);
+        box.anchoredPosition = new Vector2(0f, 30f);
+        box.sizeDelta = new Vector2(680f, 480f);
+        box.gameObject.AddComponent<Image>().color = new Color(0.1f, 0.1f, 0.16f, 0.95f);
+
+        CreateText("Title", box, "DURAKLATILDI", 56, new Vector2(0f, 200f), new Vector2(640f, 80f));
+        CreateButton("ResumeButton", box, "DEVAM ET", new Vector2(0f, 80f), () => SetPaused(false), new Color(1f, 0.78f, 0.2f));
+        CreateButton("MainMenuButton", box, "ANA MENÜ", new Vector2(0f, -20f), ReturnToMainMenu);
+
+        CreateText("VolumeTitle", box, "SES", 32, new Vector2(-230f, -150f), new Vector2(120f, 50f));
+        CreateVolumeSlider(box, new Vector2(20f, -150f), new Vector2(340f, 28f));
+        volumeLabel = CreateText("VolumeValue", box, "", 30, new Vector2(250f, -150f), new Vector2(120f, 50f));
+        UpdateVolumeLabel(GameSettings.MasterVolume);
+
+        SetPauseVisible(false);
+    }
+
+    void CreateVolumeSlider(Transform parent, Vector2 position, Vector2 size)
+    {
+        var root = CreateRect("VolumeSlider", parent);
+        root.anchoredPosition = position;
+        root.sizeDelta = size;
+        var background = root.gameObject.AddComponent<Image>();
+        background.color = new Color(0.25f, 0.25f, 0.3f);
+
+        var fillArea = CreateRect("FillArea", root);
+        fillArea.anchorMin = Vector2.zero;
+        fillArea.anchorMax = Vector2.one;
+        fillArea.offsetMin = new Vector2(4f, 4f);
+        fillArea.offsetMax = new Vector2(-4f, -4f);
+        var fillRect = CreateRect("Fill", fillArea);
+        fillRect.offsetMin = fillRect.offsetMax = Vector2.zero;
+        fillRect.gameObject.AddComponent<Image>().color = new Color(1f, 0.78f, 0.2f);
+
+        var handleArea = CreateRect("HandleArea", root);
+        handleArea.anchorMin = Vector2.zero;
+        handleArea.anchorMax = Vector2.one;
+        handleArea.offsetMin = new Vector2(12f, 0f);
+        handleArea.offsetMax = new Vector2(-12f, 0f);
+        var handle = CreateRect("Handle", handleArea);
+        handle.sizeDelta = new Vector2(24f, 0f);
+        var handleImage = handle.gameObject.AddComponent<Image>();
+        handleImage.color = Color.white;
+
+        var slider = root.gameObject.AddComponent<Slider>();
+        slider.fillRect = fillRect;
+        slider.handleRect = handle;
+        slider.targetGraphic = handleImage;
+        slider.minValue = 0f;
+        slider.maxValue = 1f;
+        slider.value = GameSettings.MasterVolume;
+        slider.onValueChanged.AddListener(v =>
+        {
+            GameSettings.MasterVolume = v;
+            UpdateVolumeLabel(v);
+        });
+    }
+
+    void UpdateVolumeLabel(float v) => volumeLabel.text = $"%{Mathf.RoundToInt(v * 100f)}";
+
+    void SetPauseVisible(bool visible)
+    {
+        pauseGroup.alpha = visible ? 1f : 0f;
+        pauseGroup.interactable = pauseGroup.blocksRaycasts = visible;
+    }
+
+    // Freezes the game (physics, traffic, stars) and blocks plane input while the menu is open.
+    void SetPaused(bool value)
+    {
+        paused = value;
+        Time.timeScale = value ? 0f : 1f;
+        plane.enabled = started && !value;
+        SetPauseVisible(value);
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    // Back to the intro screen with the plane on the pad (street, traffic and stars reset with it).
+    void ReturnToMainMenu()
+    {
+        SetPaused(false);
+        plane.ResetToPad();
+        SetResultVisible(0f);
+        started = false;
+        plane.enabled = false;
+        startGroup.interactable = startGroup.blocksRaycasts = true;
+    }
+
+    void OnDestroy() => Time.timeScale = 1f;
 
     // Full-screen dimmed panel shown after landing: distance and a replay button.
     void CreateResultScreen(Transform canvas)
@@ -85,7 +189,7 @@ public class LaunchPowerHUD : MonoBehaviour
         resultGroup = panel.gameObject.AddComponent<CanvasGroup>();
         SetResultVisible(0f);
 
-        CreateText("Title", panel, "Gidilen mesafe", 36, new Vector2(0f, 200f), new Vector2(600f, 50f));
+        resultTitle = CreateText("Title", panel, "Gidilen mesafe", 36, new Vector2(0f, 200f), new Vector2(800f, 60f));
         resultDistance = CreateText("Distance", panel, "", 110, new Vector2(0f, 110f), new Vector2(800f, 130f));
 
         CreateButton("ReplayButton", panel, "TEKRAR OYNA", new Vector2(0f, -110f), () =>
@@ -210,16 +314,14 @@ public class LaunchPowerHUD : MonoBehaviour
         textRect.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.8f);
     }
 
-    // Cursor is hidden and locked to the game (mouse steers the plane), except on the intro and
-    // result screens where the buttons must be clickable.
+    // Esc opens/closes the pause menu once the game has started. The cursor is hidden and locked to
+    // the game (mouse steers the plane), except on the intro, result and pause screens.
     void UpdateCursor()
     {
         var kb = Keyboard.current;
-        var mouse = Mouse.current;
-        if (kb != null && kb.escapeKey.wasPressedThisFrame) cursorReleased = true;
-        else if (cursorReleased && mouse != null && mouse.leftButton.wasPressedThisFrame) cursorReleased = false;
+        if (started && kb != null && kb.escapeKey.wasPressedThisFrame) SetPaused(!paused);
 
-        bool locked = started && resultGroup.alpha <= 0f && !cursorReleased;
+        bool locked = started && !paused && resultGroup.alpha <= 0f;
         Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
         Cursor.visible = !locked;
     }
@@ -265,6 +367,8 @@ public class LaunchPowerHUD : MonoBehaviour
         }
         if (landedTime < 0f) landedTime = Time.unscaledTime;
         resultDistance.text = $"{meters} m";
+        resultTitle.text = plane.Crashed ? "ÇARPTIN!  Gidilen mesafe" : "Gidilen mesafe";
+        resultTitle.color = plane.Crashed ? new Color(1f, 0.35f, 0.3f) : Color.white;
         if (Time.unscaledTime - landedTime >= resultDelay)
             SetResultVisible(Mathf.MoveTowards(resultGroup.alpha, 1f, 3f * Time.unscaledDeltaTime));
     }
