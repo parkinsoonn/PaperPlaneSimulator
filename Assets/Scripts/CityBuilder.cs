@@ -17,6 +17,8 @@ public class CityBuilder : MonoBehaviour
     public float sidewalkHeight = 0.2f;
     public float lotHeight = 0.03f;
     public float fogBlendSpeed = 0.5f;
+    public Color skyHorizon = new Color(0.78f, 0.84f, 0.9f);   // the skybox's color at the horizon
+    [Range(0f, 1f)] public float skyTintBlend = 0.6f;          // how much the fog leans toward the sky over the city tint
     public int maxPropsPerSide = 10;
 
     class City
@@ -131,9 +133,24 @@ public class CityBuilder : MonoBehaviour
 
     int CycleLength => zoneSegments + transitionSegments;
 
-    int LotIndex(float z) => Mathf.Max(0, Mathf.RoundToInt((z - street.startZ) / street.segmentLength));
+    // Id of the city at a street segment (the park after a city counts as that city).
+    public string CityIdAt(int segmentIndex)
+    {
+        if (cityList.Count == 0) return null;
+        int cycle = Mathf.Max(0, segmentIndex) / CycleLength;
+        return cityList[cycle % cityList.Count].data.id;
+    }
 
-    void OnSegmentPlaced(Transform segment)
+    // Places a slot at distance s along the segment, `x` meters to the side, facing along the street.
+    void PlaceOnSegment(Transform t, int index, float s, float x, float y)
+    {
+        street.Path.LocalPose(index, s, out var p, out var yaw);
+        var rotation = Quaternion.Euler(0f, yaw, 0f);
+        t.localPosition = p + rotation * new Vector3(x, y, 0f);
+        t.localRotation = rotation;
+    }
+
+    void OnSegmentPlaced(Transform segment, int lot)
     {
         var s = GetSlots(segment);
         if (cityList.Count == 0)
@@ -142,7 +159,6 @@ public class CityBuilder : MonoBehaviour
             return;
         }
 
-        int lot = LotIndex(segment.position.z);
         int cycle = lot / CycleLength;
         int local = lot % CycleLength;
         City city = cityList[cycle % cityList.Count];
@@ -170,11 +186,11 @@ public class CityBuilder : MonoBehaviour
             else
             {
                 slot.root.gameObject.SetActive(true);
-                slot.root.localPosition = new Vector3(sign * lotX, lotHeight, zOffset);
+                PlaceOnSegment(slot.root, lot, zOffset, sign * lotX, lotHeight);
                 PlaceModel(slot, city.buildingMeshes[building], sign, true);
             }
 
-            PlaceProps(s.props[side], segment, park ? parkCity : city, sign);
+            PlaceProps(s.props[side], segment, lot, park ? parkCity : city, sign);
         }
     }
 
@@ -221,12 +237,12 @@ public class CityBuilder : MonoBehaviour
         return candidates[candidates.Count - 1];
     }
 
-    void PlaceProps(List<Slot> pool, Transform segment, City city, float sign)
+    void PlaceProps(List<Slot> pool, Transform segment, int index, City city, float sign)
     {
         int used = 0;
         if (city != null && city.data.props != null)
         {
-            float rel = segment.position.z - street.startZ;
+            float rel = index * street.segmentLength;
             for (int p = 0; p < city.data.props.Length; p++)
             {
                 var prop = city.data.props[p];
@@ -237,9 +253,10 @@ public class CityBuilder : MonoBehaviour
                     if (pool.Count <= used) pool.Add(CreateSlot(segment, $"Prop_{(sign < 0 ? "L" : "R")}{pool.Count}", false));
                     var slot = pool[used++];
                     slot.root.gameObject.SetActive(true);
-                    // Props past the sidewalk (e.g. park trees) stand on the lot, not on the curb.
-                    float y = prop.offsetX > street.roadWidth * 0.5f + street.sidewalkWidth ? lotHeight : sidewalkHeight;
-                    slot.root.localPosition = new Vector3(sign * prop.offsetX, y, z - rel);
+                    // offsetX is measured from the curb; props past the sidewalk (e.g. park trees) stand on the lot.
+                    float y = prop.offsetX > street.sidewalkWidth ? lotHeight : sidewalkHeight;
+                    float x = street.roadWidth * 0.5f + prop.offsetX;
+                    PlaceOnSegment(slot.root, index, z - rel, sign * x, y);
                     PlaceModel(slot, city.propMeshes[p], sign, false);
                 }
             }
@@ -286,7 +303,11 @@ public class CityBuilder : MonoBehaviour
             renderer = model.gameObject.AddComponent<MeshRenderer>(),
         };
         slot.renderer.sharedMaterial = buildingMaterial;
-        if (withCollider) slot.collider = root.gameObject.AddComponent<BoxCollider>();
+        if (withCollider)
+        {
+            slot.collider = root.gameObject.AddComponent<BoxCollider>();
+            root.gameObject.AddComponent<Obstacle>();   // hitting a building ends the flight with a crash
+        }
         return slot;
     }
 
@@ -308,7 +329,7 @@ public class CityBuilder : MonoBehaviour
         if (plane == null || cityList.Count == 0) return;
 
         // Fog (and the sky below the horizon) drift to the color of the city the plane is in.
-        int lot = LotIndex(plane.transform.position.z);
+        int lot = Mathf.Max(0, Mathf.FloorToInt(street.PlaneProgress / street.segmentLength));
         int cycle = lot / CycleLength;
         int local = lot % CycleLength;
         Color target = cityList[cycle % cityList.Count].fogColor;
@@ -317,6 +338,8 @@ public class CityBuilder : MonoBehaviour
             float t = (local - zoneSegments + 1f) / (transitionSegments + 1f);
             target = Color.Lerp(target, cityList[(cycle + 1) % cityList.Count].fogColor, t);
         }
+        // Keep the fog close to the sky's horizon so the far road melts into the sky.
+        target = Color.Lerp(target, skyHorizon, skyTintBlend);
         Color fog = Color.Lerp(RenderSettings.fogColor, target, 1f - Mathf.Exp(-fogBlendSpeed * Time.deltaTime));
         RenderSettings.fogColor = fog;
         if (skyInstance != null && skyInstance.HasProperty("_GroundColor")) skyInstance.SetColor("_GroundColor", fog);

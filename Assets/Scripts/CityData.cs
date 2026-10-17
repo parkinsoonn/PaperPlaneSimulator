@@ -38,7 +38,25 @@ public class PropData
     public string id;
     public float spacing = 20f;  // meters between copies along the sidewalk
     public float phase;          // offset of the first copy along the road
-    public float offsetX = 9f;   // distance from the road center
+    public float offsetX = 3f;   // distance from the curb (edge of the asphalt) toward the lots
+    public PartData[] parts;
+}
+
+// Vehicles (Assets/Data/vehicles.json): origin on the ground at the vehicle's center, front = +z.
+[Serializable]
+public class VehicleSet
+{
+    public VehicleData[] vehicles;
+}
+
+[Serializable]
+public class VehicleData
+{
+    public string id;
+    public float weight = 1f;
+    public float speedScale = 1f;  // relative to its lane's speed (buses and trucks a bit slower)
+    public string[] cities;        // city ids it appears in; empty = everywhere
+    public string[] bodyColors;    // parts colored "@body" get one of these
     public PartData[] parts;
 }
 
