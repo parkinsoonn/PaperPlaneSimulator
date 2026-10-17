@@ -92,7 +92,7 @@
   ],
   "props": [
     {
-      "id": "black_lamp", "spacing": 20, "phase": 5, "offsetX": 9.2,
+      "id": "black_lamp", "spacing": 20, "phase": 5, "offsetX": 3.2,
       "parts": [
         { "type": "cylinder", "pos": [0, 2.4, 0], "size": [0.2, 4.8, 0.2], "color": "#1E1E1E" },
         { "type": "box", "pos": [0, 5, 0], "size": [0.45, 0.6, 0.45], "color": "#F2E3A0" },
@@ -100,7 +100,7 @@
       ]
     },
     {
-      "id": "tree", "spacing": 20, "phase": 15, "offsetX": 8.4,
+      "id": "tree", "spacing": 20, "phase": 15, "offsetX": 2.4,
       "parts": [
         { "type": "cylinder", "pos": [0, 1.4, 0], "size": [0.3, 2.8, 0.3], "color": "#5A3E25" },
         { "type": "dome", "pos": [0, 4.05, 0], "size": [2.6, 1.3, 2.6], "color": "#3F6B35" },
@@ -108,7 +108,7 @@
       ]
     },
     {
-      "id": "phone_box", "spacing": 60, "phase": 25, "offsetX": 8.8,
+      "id": "phone_box", "spacing": 60, "phase": 25, "offsetX": 2.8,
       "parts": [
         { "type": "box", "pos": [0, 1.3, 0], "size": [1, 2.6, 1], "color": "#C21F1F" },
         { "type": "dome", "pos": [0, 2.72, 0], "size": [1, 0.25, 1], "color": "#C21F1F" },
@@ -119,7 +119,7 @@
       ]
     },
     {
-      "id": "post_box", "spacing": 80, "phase": 45, "offsetX": 7,
+      "id": "post_box", "spacing": 80, "phase": 45, "offsetX": 1,
       "parts": [
         { "type": "cylinder", "pos": [0, 0.6, 0], "size": [0.5, 1.2, 0.5], "color": "#C21F1F" },
         { "type": "dome", "pos": [0, 1.32, 0], "size": [0.55, 0.25, 0.55], "color": "#C21F1F" }
