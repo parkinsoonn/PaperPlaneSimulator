@@ -1,0 +1,13 @@
+{
+  "id": "swallow",
+  "name": "Kırlangıç",
+  "wingtip": [0.84, 0.58, -0.55],
+  "panels": [
+    { "name": "wing_outer", "points": [0, 0.44, 1.1, 0.84, 0.58, -0.55, 0.42, 0.51, -0.35], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "wing_inner", "points": [0, 0.44, 1.1, 0.42, 0.51, -0.35, 0, 0.44, -0.15], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "tail_center", "points": [0, 0.44, -0.15, 0.42, 0.51, -0.35, 0, 0.44, -0.62], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "tail_spike", "points": [0.42, 0.51, -0.35, 0.3, 0.48, -1.2, 0.063, 0.4505, -0.5795], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "tail_stripe", "points": [0.3, 0.48, -1.2, 0, 0.44, -0.62, 0.063, 0.4505, -0.5795], "thickness": 0.03, "mat": "accent", "mirror": true },
+    { "name": "keel", "points": [0, 0.44, 1.1, 0, 0, 0.45, 0, 0, -0.2, 0, 0.44, -0.62], "thickness": 0.03, "mat": "shade", "mirror": false }
+  ]
+}

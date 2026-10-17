@@ -21,6 +21,12 @@ public class CityBuilder : MonoBehaviour
     [Range(0f, 1f)] public float skyTintBlend = 0.6f;          // how much the fog leans toward the sky over the city tint
     public int maxPropsPerSide = 10;
 
+    [Header("Behind the lots")]
+    public float backRowDistance = 42f;                      // from the street center; a second row right behind the lots
+    public Vector2 backRowHeight = new Vector2(1f, 1.25f);   // height scale range (more stretches the windows)
+    public float farRowDistance = 70f;                       // a third row far back, faded by the fog into a skyline
+    public Vector2 farRowScale = new Vector2(1f, 1.3f);      // uniform scale range (more makes windows look giant)
+
     class City
     {
         public CityData data;
@@ -44,6 +50,8 @@ public class CityBuilder : MonoBehaviour
     class SegmentSlots
     {
         public readonly Slot[] buildings = new Slot[2];          // 0 = left, 1 = right
+        public readonly Slot[] back = new Slot[2];               // second row behind the lot (no collider)
+        public readonly Slot[] far = new Slot[2];                // skyline row far back (no collider)
         public readonly List<Slot>[] props = { new List<Slot>(), new List<Slot>() };
         public readonly Renderer[] lots = new Renderer[2];
         public readonly Renderer[] sidewalks = new Renderer[2];
@@ -156,6 +164,8 @@ public class CityBuilder : MonoBehaviour
         if (cityList.Count == 0)
         {
             foreach (var slot in s.buildings) slot.root.gameObject.SetActive(false);
+            foreach (var slot in s.back) slot.root.gameObject.SetActive(false);
+            foreach (var slot in s.far) slot.root.gameObject.SetActive(false);
             return;
         }
 
@@ -191,7 +201,30 @@ public class CityBuilder : MonoBehaviour
             }
 
             PlaceProps(s.props[side], segment, lot, park ? parkCity : city, sign);
+            PlaceBackRows(s, side, city, cycle, local, lot, sign, park);
         }
+    }
+
+    // Rows behind the lots so the city doesn't end at the lot edge. Skipped in parks and on the inside
+    // of bends, where the bend's tight inner radius would pile them up.
+    void PlaceBackRows(SegmentSlots s, int side, City city, int cycle, int local, int lot, float sign, bool park)
+    {
+        float bend = street.Path.Bend(lot);   // positive = turning right
+        bool hidden = park || (bend != 0f && Mathf.Sign(bend) == sign);
+        var rng = new System.Random(Hash(seed, cycle, local, side + 2));
+        float height = Mathf.Lerp(backRowHeight.x, backRowHeight.y, (float)rng.NextDouble());
+        float scale = Mathf.Lerp(farRowScale.x, farRowScale.y, (float)rng.NextDouble());
+        PlaceRowBuilding(s.back[side], city, rng, hidden, lot, sign * backRowDistance, new Vector3(1f, height, 1f));
+        PlaceRowBuilding(s.far[side], city, rng, hidden, lot, sign * farRowDistance, Vector3.one * scale);
+    }
+
+    void PlaceRowBuilding(Slot slot, City city, System.Random rng, bool hidden, int lot, float x, Vector3 scale)
+    {
+        int building = hidden ? -1 : Pick(city, city.singles, rng);
+        slot.root.gameObject.SetActive(building >= 0);
+        if (building < 0) return;
+        PlaceOnSegment(slot.root, lot, street.segmentLength * 0.5f, x, lotHeight);
+        PlaceModel(slot, city.buildingMeshes[building], Mathf.Sign(x), false, scale);
     }
 
     // Lots are handled in pairs (blocks): one two-lot building, or two one-lot buildings.
@@ -265,10 +298,11 @@ public class CityBuilder : MonoBehaviour
     }
 
     // Models are authored for the right side (x = away from the road); the left side is mirrored.
-    static void PlaceModel(Slot slot, Mesh mesh, float sign, bool withCollider)
+    static void PlaceModel(Slot slot, Mesh mesh, float sign, bool withCollider, Vector3? scale = null)
     {
+        Vector3 size = scale ?? Vector3.one;
         slot.filter.sharedMesh = mesh;
-        slot.model.localScale = new Vector3(sign, 1f, 1f);
+        slot.model.localScale = new Vector3(sign * size.x, size.y, size.z);
         if (!withCollider || slot.collider == null) return;
         Bounds b = mesh.bounds;
         slot.collider.center = new Vector3(b.center.x * sign, b.center.y, b.center.z);
@@ -281,6 +315,10 @@ public class CityBuilder : MonoBehaviour
         s = new SegmentSlots();
         s.buildings[0] = CreateSlot(segment, "Building_L", true);
         s.buildings[1] = CreateSlot(segment, "Building_R", true);
+        s.back[0] = CreateSlot(segment, "BackRow_L", false);
+        s.back[1] = CreateSlot(segment, "BackRow_R", false);
+        s.far[0] = CreateSlot(segment, "FarRow_L", false);
+        s.far[1] = CreateSlot(segment, "FarRow_R", false);
         s.lots[0] = FindRenderer(segment, "LotLeftGround");
         s.lots[1] = FindRenderer(segment, "LotRightGround");
         s.sidewalks[0] = FindRenderer(segment, "SidewalkLeft");

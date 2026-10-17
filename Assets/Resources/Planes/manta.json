@@ -1,0 +1,15 @@
+{
+ "id": "manta",
+ "name": "Vatoz",
+ "wingtip": [0.95, 0.45, -0.52],
+ "panels": [
+  { "name": "top_front", "points": [0, 0.58, 0.75, 0.42, 0.5, 0.42, 0.95, 0.45, -0.52], "thickness": 0.03, "mat": "paper", "mirror": true },
+  { "name": "top_ridge", "points": [0, 0.58, 0.75, 0.95, 0.45, -0.52, 0, 0.58, -0.35], "thickness": 0.03, "mat": "paper", "mirror": true },
+  { "name": "top_rear", "points": [0.95, 0.45, -0.52, 0.5, 0.47, -0.45, 0, 0.58, -0.35], "thickness": 0.03, "mat": "paper", "mirror": true },
+  { "name": "under_front", "points": [0, 0.56, 0.74, 0.95, 0.44, -0.52, 0, 0.06, 0.1], "thickness": 0.03, "mat": "shade", "mirror": true },
+  { "name": "under_rear", "points": [0, 0.06, 0.1, 0.95, 0.44, -0.52, 0, 0.56, -0.35], "thickness": 0.03, "mat": "shade", "mirror": true },
+  { "name": "horn", "points": [0.084, 0.564, 0.684, 0.294, 0.523, 0.519, 0.19, 0.54, 0.95], "thickness": 0.025, "mat": "paper", "mirror": true },
+  { "name": "keel", "points": [0, 0.5, 0.7, 0, 0, 0.12, 0, 0.5, -0.3], "thickness": 0.05, "mat": "shade", "mirror": false },
+  { "name": "tail_spike", "points": [-0.04, 0.56, -0.35, 0.04, 0.56, -0.35, 0, 0.52, -0.95], "thickness": 0.02, "mat": "accent", "mirror": false }
+ ]
+}

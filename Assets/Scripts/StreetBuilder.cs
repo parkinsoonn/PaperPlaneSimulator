@@ -23,6 +23,7 @@ public class StreetBuilder : MonoBehaviour
     public float fieldWidth = 150f;
     public float startZ = -30f;
     public int curveSteps = 4;           // sub-steps per segment for the curved strips
+    public float fieldBandWidth = 10f;   // the field is split across its width so the curved world bends it like the buildings on it
     public float groundSnap = 100f;
 
     [Header("Turns")]
@@ -122,8 +123,9 @@ public class StreetBuilder : MonoBehaviour
         BuildStrip(s.sidewalkRight, index, half, walk, 0.2f, -1f);    // curb faces the road (-x side)
         BuildStrip(s.lotLeft, index, -lotEnd, -walk, 0.03f, 0f);
         BuildStrip(s.lotRight, index, walk, lotEnd, 0.03f, 0f);
-        BuildStrip(s.fieldLeft, index, -fieldEnd, -lotEnd, 0f, 0f);
-        BuildStrip(s.fieldRight, index, lotEnd, fieldEnd, 0f, 0f);
+        int fieldBands = Mathf.Max(1, Mathf.CeilToInt(fieldWidth / Mathf.Max(1f, fieldBandWidth)));
+        BuildStrip(s.fieldLeft, index, -fieldEnd, -lotEnd, 0f, 0f, fieldBands);
+        BuildStrip(s.fieldRight, index, lotEnd, fieldEnd, 0f, 0f, fieldBands);
 
         float mid = segmentLength * 0.5f;
         foreach (var (dash, x, _) in s.dashes)
@@ -143,8 +145,9 @@ public class StreetBuilder : MonoBehaviour
     }
 
     // Flat strip between lateral offsets x0..x1 at height y along the segment's arc. curbSide != 0
-    // adds a vertical face from the ground up to y on the edge facing that x direction.
-    void BuildStrip(Mesh mesh, int index, float x0, float x1, float y, float curbSide)
+    // adds a vertical face from the ground up to y on the edge facing that x direction. bands > 1 splits
+    // the strip across its width (the curved world bends per vertex, so wide strips need inner vertices).
+    void BuildStrip(Mesh mesh, int index, float x0, float x1, float y, float curbSide, int bands = 1)
     {
         var vertices = new List<Vector3>();
         var triangles = new List<int>();
@@ -157,7 +160,11 @@ public class StreetBuilder : MonoBehaviour
             Vector3 r1 = Quaternion.Euler(0f, yaw1, 0f) * Vector3.right;
             Vector3 up = Vector3.up * y;
 
-            AddQuad(vertices, triangles, p0 + r0 * x0 + up, p0 + r0 * x1 + up, p1 + r1 * x1 + up, p1 + r1 * x0 + up, Vector3.up);
+            for (int b = 0; b < bands; b++)
+            {
+                float xa = Mathf.Lerp(x0, x1, (float)b / bands), xb = Mathf.Lerp(x0, x1, (float)(b + 1) / bands);
+                AddQuad(vertices, triangles, p0 + r0 * xa + up, p0 + r0 * xb + up, p1 + r1 * xb + up, p1 + r1 * xa + up, Vector3.up);
+            }
             if (curbSide != 0f)
             {
                 float xe = curbSide > 0f ? x1 : x0;

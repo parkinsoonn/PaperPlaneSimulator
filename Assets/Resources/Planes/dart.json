@@ -1,0 +1,13 @@
+{
+  "id": "dart",
+  "name": "Ok",
+  "wingtip": [0.55, 0.66, -1.1],
+  "panels": [
+    { "name": "wing_fold", "points": [0, 0.45, 1.25, 0.1, 0.477, -1.1, 0, 0.45, -1.1], "thickness": 0.03, "mat": "shade", "mirror": true },
+    { "name": "wing_mid", "points": [0, 0.45, 1.25, 0.094, 0.4754, -0.96, 0.263, 0.5215, -0.96], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "wing_outer", "points": [0, 0.45, 1.25, 0.517, 0.6475, -0.96, 0.263, 0.5215, -0.96], "thickness": 0.03, "mat": "paper", "mirror": true },
+    { "name": "trail_inner", "points": [0.1, 0.477, -1.1, 0.28, 0.526, -1.1, 0.263, 0.5215, -0.96, 0.094, 0.4754, -0.96], "thickness": 0.03, "mat": "accent", "mirror": true },
+    { "name": "trail_outer", "points": [0.28, 0.526, -1.1, 0.55, 0.66, -1.1, 0.517, 0.6475, -0.96, 0.263, 0.5215, -0.96], "thickness": 0.03, "mat": "accent", "mirror": true },
+    { "name": "keel", "points": [0, 0.45, 1.25, 0, 0.45, -1.1, 0, 0, -0.6], "thickness": 0.03, "mat": "shade", "mirror": false }
+  ]
+}
