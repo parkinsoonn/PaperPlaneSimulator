@@ -15,6 +15,7 @@ public class StarSpawner : MonoBehaviour
     }
 
     public PaperPlaneController plane;
+    public StreetBuilder street;         // stars are placed along the street's path
     public Material starMaterial;
     public Material glowMaterial;        // Custom/CurvedGlow halo drawn around each star
     public float glowIntensity = 1.6f;   // HDR boost on the star color so bloom picks it up
@@ -23,7 +24,7 @@ public class StarSpawner : MonoBehaviour
     public float spawnAhead = 120f;
     public float despawnBehind = 20f;
     public float starSize = 0.6f;
-    public float halfWidth = 9f;         // stars stay over the street
+    public float halfWidth = 11f;        // stars stay over the street
     public float openingDistance = 150f; // stars this close to the launch point are placed higher,
     public float openingHeight = 12f;    // since the plane climbs right after the throw
     public StarType[] types =
@@ -33,11 +34,11 @@ public class StarSpawner : MonoBehaviour
         new StarType { name = "Red",    color = new Color(1f, 0.2f, 0.15f),   weight = 4f,  boost = 24f },
     };
 
-    readonly List<GameObject> stars = new List<GameObject>();
+    readonly List<(GameObject star, float s)> stars = new List<(GameObject, float)>();
     Mesh starMesh;
     Mesh glowMesh;
-    float nextZ;
-    float launchZ;
+    float nextS;     // distances along the street
+    float launchS;
     bool active;
 
     void Awake()
@@ -48,7 +49,7 @@ public class StarSpawner : MonoBehaviour
 
     void Update()
     {
-        if (plane == null) return;
+        if (plane == null || street == null || street.Path == null) return;
 
         // Back on the pad: clear the previous throw's stars.
         if (!plane.IsFlying && !plane.HasLanded)
@@ -58,41 +59,42 @@ public class StarSpawner : MonoBehaviour
         }
         if (!plane.IsFlying) return;
 
-        Vector3 p = plane.transform.position;
+        float s = street.PlaneProgress;
         if (!active)
         {
             active = true;
-            launchZ = p.z;
-            nextZ = p.z + spacing * 1.5f;
+            launchS = s;
+            nextS = s + spacing * 1.5f;
         }
 
-        while (nextZ < p.z + spawnAhead)
+        while (nextS < s + spawnAhead)
         {
-            Spawn(nextZ, p.y);
-            nextZ += spacing;
+            Spawn(nextS, plane.transform.position.y);
+            nextS += spacing;
         }
 
         for (int i = stars.Count - 1; i >= 0; i--)
         {
-            if (stars[i] == null) stars.RemoveAt(i);   // already collected
-            else if (stars[i].transform.position.z < p.z - despawnBehind)
+            if (stars[i].star == null) stars.RemoveAt(i);   // already collected
+            else if (stars[i].s < s - despawnBehind)
             {
-                Destroy(stars[i]);
+                Destroy(stars[i].star);
                 stars.RemoveAt(i);
             }
         }
     }
 
-    void Spawn(float z, float planeHeight)
+    void Spawn(float s, float planeHeight)
     {
         StarType type = PickType();
-        float x = plane.CorridorCenterX + Random.Range(-halfWidth, halfWidth);
-        float baseHeight = z - launchZ < openingDistance ? Mathf.Max(planeHeight, openingHeight) : planeHeight;
+        var pose = street.Path.GetPose(s);
+        float side = Random.Range(-halfWidth, halfWidth);
+        float baseHeight = s - launchS < openingDistance ? Mathf.Max(planeHeight, openingHeight) : planeHeight;
         float y = Mathf.Clamp(baseHeight + Random.Range(-4f, 2f), 1.5f, 25f);
 
         var go = new GameObject($"Star_{type.name}");
         go.transform.SetParent(transform, false);
-        go.transform.position = new Vector3(x, y, z);
+        go.transform.position = pose.position + pose.right * side + Vector3.up * y;
         go.transform.localScale = Vector3.one * starSize;
         go.AddComponent<MeshFilter>().sharedMesh = starMesh;
         var renderer = go.AddComponent<MeshRenderer>();
@@ -123,7 +125,7 @@ public class StarSpawner : MonoBehaviour
         var pickup = go.AddComponent<StarPickup>();
         pickup.boost = type.boost;
         pickup.glow = glow;
-        stars.Add(go);
+        stars.Add((go, s));
     }
 
     // Unit quad in the xy plane; the glow shader turns it to face the camera.
@@ -153,8 +155,8 @@ public class StarSpawner : MonoBehaviour
 
     void Clear()
     {
-        foreach (var s in stars)
-            if (s != null) Destroy(s);
+        foreach (var (star, _) in stars)
+            if (star != null) Destroy(star);
         stars.Clear();
         active = false;
     }

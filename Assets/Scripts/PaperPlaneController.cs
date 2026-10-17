@@ -24,7 +24,7 @@ public class PaperPlaneController : MonoBehaviour
     public bool invertMouseY = false;
 
     [Header("Corridor")]
-    public float corridorHalfWidth = 10f;   // street + sidewalk, centered on the launch point, running along +Z
+    public float corridorHalfWidth = 12f;   // street + sidewalk, centered on the launch point, running along +Z
     public float corridorSoftZone = 4f;     // within this distance of the edge the plane is eased back
 
     [Header("Aerodynamics")]
@@ -46,8 +46,12 @@ public class PaperPlaneController : MonoBehaviour
     public bool IsFlying => flying;
     public float CorridorCenterX => startPosition.x;
     public bool HasLanded { get; private set; }  // landed and waiting for a restart
-    public float FlightDistance { get; private set; }   // horizontal meters from the launch point; kept after landing
+    public bool Crashed { get; private set; }    // the flight ended by hitting a vehicle or building
+    public float FlightDistance { get; private set; }   // meters along the street since launch; kept after landing
+    public StreetBuilder street;                 // follows the street's path for distance and edge push-back
     Vector3 launchPoint;
+    float launchProgress;
+    int pathHint;
     bool hasLaunched;
     float chargeTime;
     Vector3 startPosition;
@@ -109,7 +113,9 @@ public class PaperPlaneController : MonoBehaviour
     {
         flying = false;
         HasLanded = false;
+        Crashed = false;
         hasLaunched = false;
+        pathHint = 0;
         IsCharging = false;
         Charge = 0f;
         FlightDistance = 0f;
@@ -132,7 +138,10 @@ public class PaperPlaneController : MonoBehaviour
         launchGrace = 0.3f;
         launchPoint = rb.position;
         hasLaunched = true;
+        Crashed = false;
         FlightDistance = 0f;
+        pathHint = 0;
+        if (HasPath) launchProgress = street.Path.Progress(rb.position, ref pathHint);
         pitch = launchPitch;
         bank = 0f;
         turnAxis = 0f;
@@ -144,10 +153,16 @@ public class PaperPlaneController : MonoBehaviour
     void FixedUpdate()
     {
         // Keep measuring after touchdown so the slide counts toward the throw.
+        float progress = HasPath && hasLaunched ? street.Path.Progress(rb.position, ref pathHint) : 0f;
         if (hasLaunched)
         {
-            Vector3 travelled = rb.position - launchPoint;
-            FlightDistance = new Vector2(travelled.x, travelled.z).magnitude;
+            if (HasPath)
+                FlightDistance = Mathf.Max(0f, progress - launchProgress);
+            else
+            {
+                Vector3 travelled = rb.position - launchPoint;
+                FlightDistance = new Vector2(travelled.x, travelled.z).magnitude;
+            }
         }
         if (!flying) return;
 
@@ -176,9 +191,21 @@ public class PaperPlaneController : MonoBehaviour
         }
 
         // Near the street edge, steer back toward the middle (only while still drifting outward).
-        float offset = rb.position.x - CorridorCenterX;
+        // Offsets are measured across the street at the plane's spot, so this follows the bends.
+        float offset, outward;
+        if (HasPath)
+        {
+            var pose = street.Path.GetPose(progress);
+            offset = Vector3.Dot(rb.position - pose.position, pose.right);
+            outward = Vector3.Dot(vel, pose.right);
+        }
+        else
+        {
+            offset = rb.position.x - CorridorCenterX;
+            outward = vel.x;
+        }
         float edge = Mathf.InverseLerp(corridorHalfWidth - corridorSoftZone, corridorHalfWidth, Mathf.Abs(offset));
-        if (edge > 0f && (Mathf.Sign(vel.x) == Mathf.Sign(offset) || edge >= 1f))
+        if (edge > 0f && (Mathf.Sign(outward) == Mathf.Sign(offset) || edge >= 1f))
             turnInput = Mathf.Clamp(turnInput - Mathf.Sign(offset) * edge * 1.5f, -1f, 1f);
 
         turnAxis = Mathf.MoveTowards(turnAxis, turnInput, turnResponse * dt);
@@ -216,8 +243,29 @@ public class PaperPlaneController : MonoBehaviour
         rb.linearVelocity += vel.normalized * amount;
     }
 
-    void OnCollisionEnter(Collision collision) => Land();
-    void OnCollisionStay(Collision collision) => Land();
+    bool HasPath => street != null && street.Path != null;
+
+    // Hitting a vehicle or a building ends the flight on the spot.
+    public void Crash()
+    {
+        if (!flying) return;
+        flying = false;
+        HasLanded = true;
+        Crashed = true;
+        rb.linearVelocity *= 0.2f;   // the plane drops where it hit
+    }
+
+    void OnCollisionEnter(Collision collision) => OnContact(collision);
+    void OnCollisionStay(Collision collision) => OnContact(collision);
+
+    void OnContact(Collision collision)
+    {
+        if (collision.collider.GetComponentInParent<Obstacle>() != null)
+        {
+            if (launchGrace <= 0f) Crash();
+        }
+        else Land();
+    }
 
     void Land()
     {

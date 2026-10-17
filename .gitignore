@@ -112,3 +112,9 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# AllSky Free (Asset Store): only the sky the game uses is kept in the repo.
+# Re-import the package from Package Manager > My Assets to get the others.
+/[Aa]ssets/AllSkyFree/*
+!/[Aa]ssets/AllSkyFree/Epic_BlueSunset/
+!/[Aa]ssets/AllSkyFree/Epic_BlueSunset.meta

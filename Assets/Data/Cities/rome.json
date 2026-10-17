@@ -82,14 +82,14 @@
   ],
   "props": [
     {
-      "id": "cypress", "spacing": 20, "phase": 15, "offsetX": 8.6,
+      "id": "cypress", "spacing": 20, "phase": 15, "offsetX": 2.6,
       "parts": [
         { "type": "cylinder", "pos": [0, 0.6, 0], "size": [0.3, 1.2, 0.3], "color": "#4A3626" },
         { "type": "cone", "pos": [0, 4.2, 0], "size": [1.4, 7, 1.4], "color": "#2F4A2A" }
       ]
     },
     {
-      "id": "lamp", "spacing": 20, "phase": 5, "offsetX": 9.2,
+      "id": "lamp", "spacing": 20, "phase": 5, "offsetX": 3.2,
       "parts": [
         { "type": "cylinder", "pos": [0, 2.2, 0], "size": [0.16, 4.4, 0.16], "color": "#2A2A2A" },
         { "type": "box", "pos": [-0.5, 4.4, 0], "size": [1, 0.1, 0.1], "color": "#2A2A2A" },
@@ -97,7 +97,7 @@
       ]
     },
     {
-      "id": "fountain", "spacing": 80, "phase": 45, "offsetX": 7.5,
+      "id": "fountain", "spacing": 80, "phase": 45, "offsetX": 1.5,
       "parts": [
         { "type": "cylinder", "pos": [0, 0.3, 0], "size": [1.6, 0.6, 1.6], "color": "#E4D8C0" },
         { "type": "cylinder", "pos": [0, 0.9, 0], "size": [0.4, 1.2, 0.4], "color": "#E4D8C0" },
