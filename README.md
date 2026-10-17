@@ -25,6 +25,8 @@ Uçak yere indiğinde gidilen mesafe (cadde boyunca) gösterilir. Bir araca ya d
 - **Virajlı, sonsuz cadde**: 16 m'lik 4 şeritli cadde rastgele yerlerde 30–60° yumuşakça sağa/sola kıvrılır; binalar, kaldırımlar ve trafik virajla birlikte döner. Uçak ilerledikçe arkada kalan parçalar öne taşınır.
 - **Gidiş-geliş trafiği**: sol şeritlerden araçlar karşıdan gelir, sağ şeritlerde aynı yöne yavaş giderler. Sedan, hatchback, spor araba, panelvan, kamyon, otobüs; New York'ta sarı taksiler, Londra'da siyah taksi ve iki katlı kırmızı otobüsler.
 - **Çarpışma**: araçlara ve binalara çarpmak oyunu bitirir; zemine inmek normal bitiştir.
+- **Stall (hız kaybı)**: burnu sürekli yukarıda tutunca uçak yavaşlar; 7 m/s'nin altında kanatlar taşımayı bırakır, burun düşer ve uçak dalışa geçer. Burnu kaldırmayı bırakıp 15 m/s'ye kadar hızlanırsa toparlanır; stall'da yere çarpmak **"ÇARPTIN!"** sayılır.
+- **Geri dönüş yok**: uçağın burnu caddenin yönünden en fazla 70° sapabilir; arkada kalan harita geri dönüştürüldüğü için geri uçulamaz.
 - **Hız yıldızları**: uçuş yolunda çıkar, parlar ve içinden geçince hız ve altın verir. Altın atış bitince (iniş ya da çarpma) eklenir; ANA MENÜ ile yarıda bırakılan atış altın vermez.
 
   | Yıldız | Çıkma şansı | Hız kazancı | Altın |
@@ -98,7 +100,7 @@ Kullanılan paketler: Universal Render Pipeline, Input System. Resimler Git LFS 
 
 Hepsi Inspector'dan ya da JSON dosyalarından değiştirilebilir:
 
-- **Uçak hızı ve uçuş hissi**: `PaperPlane` → `PaperPlaneController` (fırlatma hızları, kaldırma/sürtünme, dönüş hızı, fare hassasiyeti, koridor genişliği).
+- **Uçak hızı ve uçuş hissi**: `PaperPlane` → `PaperPlaneController` (fırlatma hızları, kaldırma/sürtünme, dönüş hızı, fare hassasiyeti, koridor genişliği, en fazla sapma açısı, stall hızları).
 - **Cadde ve virajlar**: `Street` → `StreetBuilder` (genişlikler, şerit aralığı, viraj sıklığı ve açısı) ve `CurvedWorld` (`curvature`).
 - **Şehirler**: `Street` → `CityBuilder` (şehir sırası, bölge uzunluğu, sisin gökyüzüne ne kadar yaklaşacağı, arka sıra ve silüet mesafe/ölçekleri); binaların kendisi `Assets/Data/Cities/*.json`.
 - **Trafik**: `Traffic` → `TrafficSpawner` (şeritler, hızlar, araç aralığı, en fazla araç); araç tipleri `Assets/Data/vehicles.json`.
