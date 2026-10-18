@@ -26,6 +26,14 @@ public class PaperPlaneController : MonoBehaviour
     [Header("Corridor")]
     public float corridorHalfWidth = 12f;   // street + sidewalk, centered on the launch point, running along +Z
     public float corridorSoftZone = 4f;     // within this distance of the edge the plane is eased back
+    public float maxHeadingOffset = 70f;    // degrees the nose may turn away from the street's direction (the map behind is recycled)
+    public float headingSoftZone = 20f;     // the turn eases out over these last degrees
+
+    [Header("Stall")]
+    public float stallSpeed = 7f;           // below this the wings stop lifting: the nose drops and the plane dives
+    public float stallRange = 4f;           // lift fades out over this many m/s above stallSpeed
+    public float stallRecoverSpeed = 15f;   // a stalled plane flies again only after diving back to this speed
+    public float stallNoseDrop = 80f;       // degrees per second the nose falls while stalled
 
     [Header("Aerodynamics")]
     public float liftCoefficient = 0.06f;   // lift accel = coef * forwardSpeed^2
@@ -46,7 +54,8 @@ public class PaperPlaneController : MonoBehaviour
     public bool IsFlying => flying;
     public float CorridorCenterX => startPosition.x;
     public bool HasLanded { get; private set; }  // landed and waiting for a restart
-    public bool Crashed { get; private set; }    // the flight ended by hitting a vehicle or building
+    public bool Crashed { get; private set; }    // the flight ended by hitting a vehicle or building, or diving into the ground in a stall
+    public bool Stalled { get; private set; }    // too slow to fly: nose down, falling
     public float FlightDistance { get; private set; }   // meters along the street since launch; kept after landing
     public int ThrowGold { get; private set; }          // gold from stars collected this throw; kept after landing
     public StreetBuilder street;                 // follows the street's path for distance and edge push-back
@@ -115,6 +124,7 @@ public class PaperPlaneController : MonoBehaviour
         flying = false;
         HasLanded = false;
         Crashed = false;
+        Stalled = false;
         hasLaunched = false;
         pathHint = 0;
         IsCharging = false;
@@ -141,6 +151,7 @@ public class PaperPlaneController : MonoBehaviour
         launchPoint = rb.position;
         hasLaunched = true;
         Crashed = false;
+        Stalled = false;
         FlightDistance = 0f;
         ThrowGold = 0;
         pathHint = 0;
@@ -186,6 +197,17 @@ public class PaperPlaneController : MonoBehaviour
         Vector3 vel = rb.linearVelocity;
         float speed = vel.magnitude;
 
+        // Stall: holding the nose up bleeds speed until the wings stop lifting. Then the nose drops
+        // and pull-up is ignored; the plane only flies again once the dive has built the speed back
+        // up and the player has let go of pull-up, so keeping the nose up ends in the ground.
+        if (speed < stallSpeed && launchGrace <= 0f) Stalled = true;
+        else if (Stalled && speed >= stallRecoverSpeed && pitchInput <= 0f) Stalled = false;
+        if (Stalled)
+        {
+            pitchInput = Mathf.Min(pitchInput, 0f);
+            pitch = Mathf.MoveTowards(pitch, minPitch, stallNoseDrop * dt);
+        }
+
         // Nose slowly drops toward the flight path, so a slow plane noses down and glides.
         if (speed > 0.1f)
         {
@@ -195,26 +217,38 @@ public class PaperPlaneController : MonoBehaviour
 
         // Near the street edge, steer back toward the middle (only while still drifting outward).
         // Offsets are measured across the street at the plane's spot, so this follows the bends.
-        float offset, outward;
+        float offset, outward, streetYaw;
         if (HasPath)
         {
             var pose = street.Path.GetPose(progress);
             offset = Vector3.Dot(rb.position - pose.position, pose.right);
             outward = Vector3.Dot(vel, pose.right);
+            streetYaw = pose.yaw;
         }
         else
         {
             offset = rb.position.x - CorridorCenterX;
             outward = vel.x;
+            streetYaw = startRotation.eulerAngles.y;
         }
         float edge = Mathf.InverseLerp(corridorHalfWidth - corridorSoftZone, corridorHalfWidth, Mathf.Abs(offset));
         if (edge > 0f && (Mathf.Sign(outward) == Mathf.Sign(offset) || edge >= 1f))
             turnInput = Mathf.Clamp(turnInput - Mathf.Sign(offset) * edge * 1.5f, -1f, 1f);
 
+        // The nose can't turn back down the street: the map behind the plane is recycled.
+        // Turning further away from the street's direction fades out near the limit.
+        float heading = Mathf.DeltaAngle(streetYaw, yaw);
+        float limit = Mathf.InverseLerp(maxHeadingOffset - headingSoftZone, maxHeadingOffset, Mathf.Abs(heading));
+        if (limit > 0f && Mathf.Sign(turnInput) == Mathf.Sign(heading))
+            turnInput *= 1f - limit;
+
         turnAxis = Mathf.MoveTowards(turnAxis, turnInput, turnResponse * dt);
 
         pitch = Mathf.Clamp(pitch + pitchInput * pitchRate * dt, minPitch, maxPitch);
         yaw += turnAxis * turnRate * dt;
+        heading = Mathf.DeltaAngle(streetYaw, yaw);
+        if (Mathf.Abs(heading) > maxHeadingOffset)
+            yaw = streetYaw + Mathf.Sign(heading) * maxHeadingOffset;
         bank = Mathf.Lerp(bank, -turnAxis * maxBank, 8f * dt);
 
         Quaternion rot = Quaternion.Euler(-pitch, yaw, bank);
@@ -233,6 +267,7 @@ public class PaperPlaneController : MonoBehaviour
         Vector3 liftDir = Vector3.Cross(vel / speed, right).normalized;
         float forwardSpeed = Mathf.Max(0f, Vector3.Dot(vel, forward));
         float lift = Mathf.Min(liftCoefficient * forwardSpeed * forwardSpeed, maxLiftAccel);
+        lift *= Stalled ? 0f : Mathf.InverseLerp(stallSpeed, stallSpeed + stallRange, speed);
         rb.AddForce(liftDir * lift, ForceMode.Acceleration);
         rb.AddForce(-vel * dragCoefficient * speed, ForceMode.Acceleration);
     }
@@ -252,7 +287,7 @@ public class PaperPlaneController : MonoBehaviour
         if (flying) ThrowGold += amount;
     }
 
-    bool HasPath =>street != null && street.Path != null;
+    bool HasPath => street != null && street.Path != null;
 
     // Hitting a vehicle or a building ends the flight on the spot.
     public void Crash()
@@ -276,9 +311,15 @@ public class PaperPlaneController : MonoBehaviour
         else Land();
     }
 
+    // Touching the ground ends the throw; diving into it in a stall counts as a crash.
     void Land()
     {
         if (!flying || launchGrace > 0f) return;
+        if (Stalled)
+        {
+            Crash();
+            return;
+        }
         flying = false;
         HasLanded = true;
         pitch = 0f;

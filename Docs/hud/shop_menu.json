@@ -1,0 +1,923 @@
+{
+ "screen": "shop_menu",
+ "reference": [
+  1920,
+  1080
+ ],
+ "fonts": {
+  "title": "Caveat Brush",
+  "body": "Nunito"
+ },
+ "colors": {
+  "paper": "#F4EBDD",
+  "kraft": "#C9A27A",
+  "ink": "#2B2B3A",
+  "red": "#B1180B",
+  "gold": "#F2B630",
+  "blueInk": "#2F5D9E",
+  "equippedGreen": "#BFE3B5",
+  "equippedText": "#1E5A2B"
+ },
+ "elements": [
+  {
+   "id": "ShopMenu",
+   "type": "image",
+   "parent": "Canvas",
+   "anchor": "stretch",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    0
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "rotation": 0,
+   "sprite": "bg_sunset",
+   "color": "#FFFFFF",
+   "animation": "açılış: 0.25 s solma 0 → 1"
+  },
+  {
+   "id": "TitleStrip",
+   "type": "panel",
+   "parent": "ShopMenu",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -72
+   ],
+   "size": [
+    520,
+    110
+   ],
+   "rotation": 1.5,
+   "sprite": "strip_kraft",
+   "color": "#FFFFFF",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "decor": true,
+   "animation": "açılış: 0.3 s, kayma y +120 → 0, ease-out-back"
+  },
+  {
+   "id": "Title",
+   "type": "text",
+   "parent": "TitleStrip",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    2
+   ],
+   "size": [
+    460,
+    90
+   ],
+   "rotation": 0,
+   "text": "MAĞAZA",
+   "font": "title",
+   "fontSize": 72,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null
+  },
+  {
+   "id": "BackButton",
+   "type": "button",
+   "parent": "ShopMenu",
+   "anchor": "top-left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    160,
+    -72
+   ],
+   "size": [
+    240,
+    84
+   ],
+   "rotation": -1.5,
+   "sprite": "button_secondary",
+   "color": "#FFFFFF",
+   "text": "GERİ",
+   "font": "title",
+   "fontSize": 46,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "outline": null,
+   "states": {
+    "hover": {
+     "scale": 1.05,
+     "sprite": "button_secondary_hover"
+    },
+    "pressed": {
+     "scale": 0.95,
+     "sprite": "button_secondary_pressed",
+     "color": "#E8DCC6"
+    },
+    "disabled": {
+     "alpha": 0.5,
+     "sprite": "button_secondary_disabled"
+    }
+   },
+   "textOffset": [
+    24,
+    0
+   ],
+   "animation": "açılış: 0.25 s, kayma x -200 → 0, ease-out, gecikme 0.1 s"
+  },
+  {
+   "id": "BackIcon",
+   "type": "icon",
+   "parent": "BackButton",
+   "anchor": "left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    48,
+    2
+   ],
+   "size": [
+    40,
+    40
+   ],
+   "rotation": 0,
+   "sprite": "icon_back",
+   "color": "#FFFFFF",
+   "decor": true
+  },
+  {
+   "id": "GoldPanel",
+   "type": "panel",
+   "parent": "ShopMenu",
+   "anchor": "top-right",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    -240,
+    -72
+   ],
+   "size": [
+    400,
+    76
+   ],
+   "rotation": 1.5,
+   "sprite": "panel_label",
+   "color": "#FFFFFF",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "decor": true,
+   "animation": "açılış: 0.3 s, kayma x +200 → 0, ease-out, gecikme 0.1 s"
+  },
+  {
+   "id": "GoldIcon",
+   "type": "icon",
+   "parent": "GoldPanel",
+   "anchor": "left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    44,
+    0
+   ],
+   "size": [
+    48,
+    48
+   ],
+   "rotation": 0,
+   "sprite": "icon_coin",
+   "color": "#FFFFFF"
+  },
+  {
+   "id": "Gold",
+   "type": "text",
+   "parent": "GoldPanel",
+   "anchor": "right",
+   "pivot": [
+    1,
+    0.5
+   ],
+   "pos": [
+    -28,
+    0
+   ],
+   "size": [
+    290,
+    56
+   ],
+   "rotation": 0,
+   "text": "ALTIN: 6105",
+   "font": "body",
+   "fontSize": 34,
+   "textColor": "#2B2B3A",
+   "align": "right",
+   "shadow": null,
+   "outline": null,
+   "animation": "satın alınca: 0.4 s sayarak azalır, ölçek 1 → 1.12 → 1"
+  },
+  {
+   "id": "ShopBoard",
+   "type": "panel",
+   "parent": "ShopMenu",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -632
+   ],
+   "size": [
+    1760,
+    800
+   ],
+   "rotation": 0,
+   "sprite": "panel_board",
+   "color": "#FFFFFF",
+   "decor": true,
+   "animation": "açılış: 0.3 s, kayma y -80 → 0 + solma, ease-out"
+  },
+  {
+   "id": "TabRENK",
+   "type": "button",
+   "parent": "ShopMenu",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    -280,
+    -197
+   ],
+   "size": [
+    280,
+    86
+   ],
+   "rotation": 0,
+   "sprite": "tab_off",
+   "color": "#FFFFFF",
+   "text": "RENK",
+   "font": "title",
+   "fontSize": 44,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null,
+   "states": {
+    "selected": {
+     "sprite": "tab_on",
+     "size": [
+      280,
+      86
+     ],
+     "pos": [
+      -280,
+      -197
+     ]
+    },
+    "normal": {
+     "sprite": "tab_off",
+     "size": [
+      280,
+      72
+     ],
+     "pos": [
+      -280,
+      -204
+     ]
+    },
+    "hover": {
+     "scale": 1.04
+    }
+   },
+   "animation": "sekme değişince: 0.12 s, seçili ölçek 0.95 → 1, ease-out-back; kart ızgarası 0.15 s solar ve 0.25 s yeniden belirir (kartlar 0.04 s arayla ölçek 0.9 → 1, ease-out-back)"
+  },
+  {
+   "id": "TabŞEKİL",
+   "type": "button",
+   "parent": "ShopMenu",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -197
+   ],
+   "size": [
+    280,
+    86
+   ],
+   "rotation": 0,
+   "sprite": "tab_off",
+   "color": "#FFFFFF",
+   "text": "ŞEKİL",
+   "font": "title",
+   "fontSize": 44,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null,
+   "states": {
+    "selected": {
+     "sprite": "tab_on",
+     "size": [
+      280,
+      86
+     ],
+     "pos": [
+      0,
+      -197
+     ]
+    },
+    "normal": {
+     "sprite": "tab_off",
+     "size": [
+      280,
+      72
+     ],
+     "pos": [
+      0,
+      -204
+     ]
+    },
+    "hover": {
+     "scale": 1.04
+    }
+   },
+   "animation": "sekme değişince: 0.12 s, seçili ölçek 0.95 → 1, ease-out-back; kart ızgarası 0.15 s solar ve 0.25 s yeniden belirir (kartlar 0.04 s arayla ölçek 0.9 → 1, ease-out-back)"
+  },
+  {
+   "id": "TabEFEKT",
+   "type": "button",
+   "parent": "ShopMenu",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    280,
+    -197
+   ],
+   "size": [
+    280,
+    86
+   ],
+   "rotation": 0,
+   "sprite": "tab_off",
+   "color": "#FFFFFF",
+   "text": "EFEKT",
+   "font": "title",
+   "fontSize": 44,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null,
+   "states": {
+    "selected": {
+     "sprite": "tab_on",
+     "size": [
+      280,
+      86
+     ],
+     "pos": [
+      280,
+      -197
+     ]
+    },
+    "normal": {
+     "sprite": "tab_off",
+     "size": [
+      280,
+      72
+     ],
+     "pos": [
+      280,
+      -204
+     ]
+    },
+    "hover": {
+     "scale": 1.04
+    }
+   },
+   "animation": "sekme değişince: 0.12 s, seçili ölçek 0.95 → 1, ease-out-back; kart ızgarası 0.15 s solar ve 0.25 s yeniden belirir (kartlar 0.04 s arayla ölçek 0.9 → 1, ease-out-back)"
+  },
+  {
+   "id": "Cards",
+   "type": "panel",
+   "parent": "ShopBoard",
+   "anchor": "top-left",
+   "pivot": [
+    0,
+    1
+   ],
+   "pos": [
+    40,
+    -30
+   ],
+   "size": [
+    1680,
+    724
+   ],
+   "rotation": 0,
+   "color": "#FFFFFF00",
+   "grid": {
+    "columns": 3,
+    "cellSize": [
+     540,
+     350
+    ],
+    "spacing": [
+     30,
+     24
+    ],
+    "origin": [
+     0,
+     0
+    ],
+    "note": "origin: Cards sol-üst köşesinden piksel, x sağa, y AŞAĞI (GridLayoutGroup). Sıra soldan sağa, yukarıdan aşağı; en fazla 6 kart. Kart rotasyonu sırayla -1°, +1°, -0.5°, +0.5°, -1°, +1° (kodla)."
+   }
+  },
+  {
+   "id": "Card_template",
+   "type": "panel",
+   "parent": "Cards",
+   "anchor": "top-left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    270,
+    -175
+   ],
+   "size": [
+    540,
+    350
+   ],
+   "rotation": -1,
+   "sprite": "panel_large",
+   "color": "#FFFFFF",
+   "shadow": null,
+   "states": {
+    "hover": {
+     "scale": 1.03,
+     "rotation": 0
+    }
+   },
+   "animation": "hover: 0.1 s, ölçek 1.03, rotasyon 0, ease-out; kart belirirken 0.2 s, ölçek 0.9 → 1, ease-out-back (0.04 s arayla)"
+  },
+  {
+   "id": "CardTape",
+   "type": "image",
+   "parent": "Card_template",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -4
+   ],
+   "size": [
+    130,
+    44
+   ],
+   "rotation": 2,
+   "sprite": "tape_2",
+   "color": "#FFFFFF",
+   "decor": true
+  },
+  {
+   "id": "Name",
+   "type": "text",
+   "parent": "Card_template",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -52
+   ],
+   "size": [
+    480,
+    56
+   ],
+   "rotation": 0,
+   "text": "Gök Mavisi",
+   "font": "title",
+   "fontSize": 46,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null
+  },
+  {
+   "id": "Swatch",
+   "type": "image",
+   "parent": "Card_template",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -145
+   ],
+   "size": [
+    220,
+    130
+   ],
+   "rotation": -3,
+   "sprite": "swatch_blot",
+   "color": "#73B8FF",
+   "tab": "RENK",
+   "note": "color: eşyanın hex rengi (kodla)"
+  },
+  {
+   "id": "SwatchOutline",
+   "type": "image",
+   "parent": "Swatch",
+   "anchor": "stretch",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    0
+   ],
+   "size": [
+    220,
+    130
+   ],
+   "rotation": 0,
+   "sprite": "swatch_outline",
+   "color": "#FFFFFF",
+   "decor": true,
+   "tab": "RENK"
+  },
+  {
+   "id": "Preview",
+   "type": "image",
+   "parent": "Card_template",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -142
+   ],
+   "size": [
+    160,
+    120
+   ],
+   "rotation": 0,
+   "sprite": "preview_shape_classic",
+   "color": "#FFFFFF",
+   "tab": "ŞEKİL,EFEKT",
+   "note": "sprite: preview_<sekme>_<eşya id>"
+  },
+  {
+   "id": "Description",
+   "type": "text",
+   "parent": "Card_template",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -226
+   ],
+   "size": [
+    480,
+    34
+   ],
+   "rotation": 0,
+   "text": "Bildiğin kâğıt uçak",
+   "font": "body",
+   "fontSize": 26,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null,
+   "tab": "ŞEKİL,EFEKT"
+  },
+  {
+   "id": "ActionButton",
+   "type": "button",
+   "parent": "Card_template",
+   "anchor": "bottom",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    48
+   ],
+   "size": [
+    460,
+    80
+   ],
+   "rotation": 0,
+   "sprite": "button_primary",
+   "color": "#FFFFFF",
+   "text": "SATIN AL · 150",
+   "font": "title",
+   "fontSize": 40,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "outline": null,
+   "states": {
+    "hover": {
+     "scale": 1.05,
+     "sprite": "button_primary_hover"
+    },
+    "pressed": {
+     "scale": 0.95,
+     "sprite": "button_primary_pressed",
+     "color": "#E8DCC6"
+    },
+    "disabled": {
+     "alpha": 0.5,
+     "sprite": "button_primary_disabled"
+    }
+   },
+   "richText": true,
+   "variants": {
+    "buy": {
+     "sprite": "button_primary",
+     "text": "SATIN AL · 150",
+     "textColor": "#2B2B3A",
+     "textPos": [
+      -26,
+      0
+     ],
+     "interactable": true,
+     "icon": "icon_coin",
+     "iconPos": [
+      150,
+      0
+     ]
+    },
+    "cantAfford": {
+     "sprite": "button_primary_disabled",
+     "text": "SATIN AL · <color=#B1180B>150</color>",
+     "textColor": "#2B2B3A",
+     "textPos": [
+      -26,
+      0
+     ],
+     "interactable": false,
+     "alpha": 0.85,
+     "icon": "icon_lock",
+     "iconPos": [
+      150,
+      0
+     ],
+     "states": {
+      "hover": {
+       "scale": 1
+      }
+     }
+    },
+    "owned": {
+     "sprite": "button_secondary",
+     "text": "KULLAN",
+     "textColor": "#2B2B3A",
+     "textPos": [
+      0,
+      0
+     ],
+     "interactable": true,
+     "icon": null
+    },
+    "equipped": {
+     "sprite": "button_secondary",
+     "color": "#BFE3B5",
+     "text": "KULLANILIYOR",
+     "textColor": "#1E5A2B",
+     "textPos": [
+      22,
+      0
+     ],
+     "interactable": false,
+     "icon": "icon_check",
+     "iconPos": [
+      -160,
+      0
+     ],
+     "states": {
+      "hover": {
+       "scale": 1
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "ActionIcon",
+   "type": "icon",
+   "parent": "ActionButton",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    150,
+    0
+   ],
+   "size": [
+    44,
+    44
+   ],
+   "rotation": 0,
+   "sprite": "icon_coin",
+   "color": "#FFFFFF",
+   "decor": true,
+   "note": "icon_coin (buy) / icon_lock (cantAfford) / icon_check (equipped, sol) / gizli (owned)"
+  }
+ ],
+ "assets": [
+  {
+   "id": "preview_shape_classic",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M148 60 L25 14 L55 60 L25 106 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M55 60 H146\" stroke=\"#C9A27A\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M25 14 L8 6 L30 26 Z\" fill=\"#B1180B\" stroke=\"#2B2B3A\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><path d=\"M25 106 L8 114 L30 94 Z\" fill=\"#B1180B\" stroke=\"#2B2B3A\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/></svg>"
+  },
+  {
+   "id": "preview_shape_dart",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M152 60 L18 46 L40 60 L18 74 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M40 60 H150\" stroke=\"#C9A27A\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M22 46 L40 60 L22 74\" fill=\"none\" stroke=\"#B1180B\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+  },
+  {
+   "id": "preview_shape_swallow",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M148 60 L38 8 L62 48 L8 46 L40 60 L8 74 L62 72 L38 112 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M40 60 H146\" stroke=\"#C9A27A\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M10 47 L40 60 L10 73\" fill=\"none\" stroke=\"#B1180B\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+  },
+  {
+   "id": "preview_shape_glider",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M148 50 L148 70 L132 70 L132 114 L50 110 L34 60 L50 10 L132 6 L132 50 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M34 60 H146\" stroke=\"#C9A27A\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M116 3 L138 3 L138 15 L116 15 Z\" fill=\"#B1180B\" stroke=\"#2B2B3A\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><path d=\"M116 105 L138 105 L138 117 L116 117 Z\" fill=\"#B1180B\" stroke=\"#2B2B3A\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/></svg>"
+  },
+  {
+   "id": "preview_shape_jet",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M10 28 L58 34 L58 42 L10 36 Z\" fill=\"#B1180B\" stroke=\"#2B2B3A\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><path d=\"M10 92 L58 86 L58 78 L10 84 Z\" fill=\"#B1180B\" stroke=\"#2B2B3A\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><path d=\"M152 60 L46 6 L62 60 L46 114 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M62 60 H150\" stroke=\"#C9A27A\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M112 46 L96 34 L92 50 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M112 74 L96 86 L92 70 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /></svg>"
+  },
+  {
+   "id": "preview_shape_manta",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M28 56 L2 58.5 L2 61.5 L28 64 Z\" fill=\"#B1180B\" stroke=\"#2B2B3A\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><path d=\"M126 60 L72 6 L26 60 L72 114 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M26 60 H124\" stroke=\"#C9A27A\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M124 50 L150 42 L132 58 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /><path d=\"M124 70 L150 78 L132 62 Z\" fill=\"#F4EBDD\" stroke=\"#2B2B3A\" stroke-width=\"3\" stroke-linejoin=\"round\" /></svg>"
+  },
+  {
+   "id": "preview_effect_classic",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M10 42 H150 M10 78 H150\" stroke=\"#8C8A9C\" stroke-width=\"5\" stroke-linecap=\"round\"/></svg>"
+  },
+  {
+   "id": "preview_effect_rainbow",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M12 24 H148\" stroke=\"#D63A2A\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 29 H148\" stroke=\"#F2B630\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 34 H148\" stroke=\"#4CAF50\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 39 H148\" stroke=\"#2F5D9E\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 44 H148\" stroke=\"#7B4FA8\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 72 H148\" stroke=\"#D63A2A\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 77 H148\" stroke=\"#F2B630\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 82 H148\" stroke=\"#4CAF50\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 87 H148\" stroke=\"#2F5D9E\" stroke-width=\"5\" stroke-linecap=\"butt\"/><path d=\"M12 92 H148\" stroke=\"#7B4FA8\" stroke-width=\"5\" stroke-linecap=\"butt\"/></svg>"
+  },
+  {
+   "id": "preview_effect_gold",
+   "kind": "sprite",
+   "size": [
+    160,
+    120
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\" viewBox=\"0 0 160 120\"><path d=\"M12 40 H148 M12 80 H148\" stroke=\"#2B2B3A\" stroke-width=\"13\" stroke-linecap=\"round\"/><path d=\"M12 40 H148 M12 80 H148\" stroke=\"#F2B630\" stroke-width=\"8\" stroke-linecap=\"round\"/><path d=\"M40 13 L42.7 19.3 L49 22 L42.7 24.7 L40 31 L37.3 24.7 L31 22 L37.3 19.3 Z\" fill=\"#F2B630\" stroke=\"#2B2B3A\" stroke-width=\"2\" stroke-linejoin=\"round\"/><path d=\"M112 47 L115.3 54.7 L123 58 L115.3 61.3 L112 69 L108.7 61.3 L101 58 L108.7 54.7 Z\" fill=\"#F2B630\" stroke=\"#2B2B3A\" stroke-width=\"2\" stroke-linejoin=\"round\"/><path d=\"M70 92 L72.4 97.6 L78 100 L72.4 102.4 L70 108 L67.6 102.4 L62 100 L67.6 97.6 Z\" fill=\"#F2B630\" stroke=\"#2B2B3A\" stroke-width=\"2\" stroke-linejoin=\"round\"/><path d=\"M138 17 L140.1 21.9 L145 24 L140.1 26.1 L138 31 L135.9 26.1 L131 24 L135.9 21.9 Z\" fill=\"#F2B630\" stroke=\"#2B2B3A\" stroke-width=\"2\" stroke-linejoin=\"round\"/><path d=\"M24 56 L25.8 60.2 L30 62 L25.8 63.8 L24 68 L22.2 63.8 L18 62 L22.2 60.2 Z\" fill=\"#F2B630\" stroke=\"#2B2B3A\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>"
+  },
+  {
+   "id": "swatch_blot",
+   "kind": "sprite",
+   "size": [
+    128,
+    96
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"96\" viewBox=\"0 0 128 96\"><path d=\"M10 40 C6 14 40 4 66 8 C96 2 124 12 120 44 C126 70 108 90 76 88 C50 94 22 92 14 70 C8 60 10 50 10 40 Z\" fill=\"#FFFFFF\"/></svg>"
+  },
+  {
+   "id": "swatch_outline",
+   "kind": "sprite",
+   "size": [
+    128,
+    96
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"96\" viewBox=\"0 0 128 96\"><path d=\"M10 40 C6 14 40 4 66 8 C96 2 124 12 120 44 C126 70 108 90 76 88 C50 94 22 92 14 70 C8 60 10 50 10 40 Z\" fill=\"none\" stroke=\"#2B2B3A\" stroke-width=\"4\" stroke-linejoin=\"round\"/></svg>"
+  },
+  {
+   "id": "icon_check",
+   "kind": "sprite",
+   "size": [
+    64,
+    64
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\"><circle cx=\"32\" cy=\"32\" r=\"28\" fill=\"#3E8E4A\" stroke=\"#2B2B3A\" stroke-width=\"4\"/><path d=\"M17 33 L28 44 L47 21\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+  },
+  {
+   "id": "panel_board",
+   "kind": "sprite",
+   "size": [
+    192,
+    192
+   ],
+   "nineSlice": [
+    48,
+    48,
+    48,
+    48
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"192\" height=\"192\" viewBox=\"0 0 192 192\"><rect x=\"6\" y=\"10\" width=\"180\" height=\"176\" rx=\"16\" fill=\"#00000026\"/><rect x=\"4\" y=\"4\" width=\"180\" height=\"176\" rx=\"16\" fill=\"#C9A27A\" stroke=\"#2B2B3A\" stroke-width=\"4\"/><rect x=\"16\" y=\"16\" width=\"156\" height=\"152\" rx=\"9\" fill=\"none\" stroke=\"#2B2B3A\" stroke-opacity=\".3\" stroke-width=\"2\" stroke-dasharray=\"10 7\"/></svg>"
+  }
+ ]
+}
