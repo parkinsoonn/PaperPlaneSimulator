@@ -10,6 +10,7 @@ Unity 6 (URP) ile yapılmış bir kağıt uçak fırlatma oyunu. Kuleden gücü 
 |---|---|
 | **BAŞLA** | Giriş ekranından oyuna geçer |
 | **MAĞAZA** | Giriş ekranından mağazayı açar (altınla kozmetik al / kullan) |
+| **ÇIKIŞ** | Giriş ekranının sol üstünden oyunu kapatır |
 | **SPACE** (basılı tut) | Güç çubuğunu doldurur; bırakınca uçak fırlar |
 | **Fare** | Uçuş sırasında yönlendirme (sağ/sol dönüş, yukarı/aşağı burun) |
 | **W / S** | Burnu yukarı / aşağı |
@@ -51,6 +52,7 @@ Uçak yere indiğinde gidilen mesafe (cadde boyunca) gösterilir. Bir araca ya d
 - **Koridor**: uçak caddenin kenarına yaklaşınca, virajlarda da, yumuşakça ortaya geri yönlendirilir.
 - **Rüzgar izi**: uçarken kanat uçlarından ince, saydam izler çıkar.
 - **Ses ayarı**: Esc menüsündeki SES çubuğu ana ses seviyesini ayarlar ve hatırlar; ileride eklenecek tüm sesler buna uyar.
+- **Kâğıt/el işi arayüz**: bütün ekranlar (giriş, güç çubuğu ve mesafe, sonuç, duraklatma, mağaza) Claude Design ile tasarlanan kitten: bantlı kâğıt kartlar, kraft şeritler, el yazısı başlıklar, açılış ve hover animasyonları, çarpınca buruşuk kart ve damga. Kaynak spec'ler ve SVG'ler `Docs/hud/`; sprite'lar `Tools/render-hud-sprites.ps1` ile (Edge headless) `Assets/Resources/UI/`'ya üretilir.
 
 ## Kurulum
 
@@ -70,6 +72,10 @@ Kullanılan paketler: Universal Render Pipeline, Input System. Resimler Git LFS 
 | `Assets/Scripts/ThirdPersonCamera.cs` | Uçağı yumuşakça takip eden kamera |
 | `Assets/Scripts/LaunchPowerHUD.cs` | Giriş ekranı, güç çubuğu, mesafe, sonuç ekranı (kazanılan altın), Esc menüsü, imleç kilidi |
 | `Assets/Scripts/ShopMenu.cs` | Mağaza ekranı: renk / şekil / efekt sekmeleri, satın al / kullan |
+| `Assets/Scripts/HudKit.cs` | Arayüz kiti: renkler, fontlar, sprite'lar ve spec'teki alanlarla panel / yazı / buton kuran yardımcılar |
+| `Assets/Scripts/UiAnim.cs`, `UiHover.cs` | Arayüz animasyonları (duraklatmada da çalışır) ve buton hover/basma ölçeği |
+| `Assets/Resources/UI/*.png`, `Assets/Resources/Fonts/` | Arayüz sprite'ları; Caveat Brush ve Nunito fontları (OFL) |
+| `Docs/hud/`, `Tools/render-hud-sprites.ps1` | Claude Design HUD spec'leri ve SVG kaynakları; SVG → PNG betiği |
 | `Assets/Scripts/CosmeticCatalog.cs` | Mağazadaki kozmetiklerin listesi ve fiyatları |
 | `Assets/Scripts/PlayerWallet.cs` | Altın, alınan ve kullanılan kozmetikler (kaydedilir) |
 | `Assets/Scripts/PlaneCosmetics.cs` | Kullanılan rengi, şekli ve iz efektini uçağa uygular; şekil JSON'larından 3D model kurar |
@@ -112,3 +118,4 @@ Hepsi Inspector'dan ya da JSON dosyalarından değiştirilebilir:
 ## Kaynaklar
 
 - Gökyüzü: [AllSky Free - 10 Sky / Skybox Set](https://assetstore.unity.com/) (Unity Asset Store, ücretsiz).
+- Fontlar: [Caveat Brush](https://fonts.google.com/specimen/Caveat+Brush) ve [Nunito](https://fonts.google.com/specimen/Nunito), SIL Open Font License (`Assets/Resources/Fonts/*-OFL.txt`).

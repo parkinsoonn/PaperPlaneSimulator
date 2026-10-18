@@ -1,0 +1,421 @@
+{
+ "screen": "result_screen",
+ "reference": [
+  1920,
+  1080
+ ],
+ "fonts": {
+  "title": "Caveat Brush",
+  "body": "Nunito"
+ },
+ "colors": {
+  "paper": "#F4EBDD",
+  "kraft": "#C9A27A",
+  "ink": "#2B2B3A",
+  "red": "#B1180B",
+  "gold": "#F2B630",
+  "blueInk": "#2F5D9E",
+  "overlay": "#000000CC",
+  "paperCrumpled": "#EFE3CC"
+ },
+ "elements": [
+  {
+   "id": "ResultScreen",
+   "type": "panel",
+   "parent": "Canvas",
+   "anchor": "stretch",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    0
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "rotation": 0,
+   "color": "#000000CC",
+   "animation": "açılış: 0.8 s bekleme (çarpma/iniş sonrası), sonra 0.4 s solma 0 → 1, ease-out"
+  },
+  {
+   "id": "ResultCard",
+   "type": "panel",
+   "parent": "ResultScreen",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    50
+   ],
+   "size": [
+    900,
+    620
+   ],
+   "rotation": -2,
+   "sprite": "panel_large",
+   "color": "#FFFFFF",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "variants": {
+    "crash": {
+     "color": "#EFE3CC"
+    }
+   },
+   "decor": true,
+   "animation": "açılış: 0.45 s, kayma y +700 → 0 ve dönme -8° → -2°, ease-out-back (kâğıt düşer); yerleşince ölçek 1.04 → 1, 0.1 s"
+  },
+  {
+   "id": "CardTape1",
+   "type": "image",
+   "parent": "ResultCard",
+   "anchor": "top-left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    70,
+    -14
+   ],
+   "size": [
+    192,
+    64
+   ],
+   "rotation": -30,
+   "sprite": "tape_1",
+   "color": "#FFFFFF",
+   "decor": true,
+   "animation": "kart yerleşince: 0.15 s, ölçek 0 → 1, ease-out-back"
+  },
+  {
+   "id": "CardTape2",
+   "type": "image",
+   "parent": "ResultCard",
+   "anchor": "top-right",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    -70,
+    -14
+   ],
+   "size": [
+    160,
+    56
+   ],
+   "rotation": 26,
+   "sprite": "tape_2",
+   "color": "#FFFFFF",
+   "decor": true,
+   "animation": "kart yerleşince: 0.15 s, ölçek 0 → 1, ease-out-back, gecikme 0.05 s"
+  },
+  {
+   "id": "CrumpleMarks",
+   "type": "image",
+   "parent": "ResultCard",
+   "anchor": "stretch",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    0
+   ],
+   "size": [
+    900,
+    620
+   ],
+   "rotation": 0,
+   "sprite": "crumple_marks",
+   "color": "#FFFFFF",
+   "decor": true,
+   "visible": false,
+   "variants": {
+    "crash": {
+     "visible": true
+    }
+   }
+  },
+  {
+   "id": "CornerFold",
+   "type": "image",
+   "parent": "ResultCard",
+   "anchor": "bottom-right",
+   "pivot": [
+    1,
+    0
+   ],
+   "pos": [
+    -6,
+    6
+   ],
+   "size": [
+    72,
+    72
+   ],
+   "rotation": 90,
+   "sprite": "corner_fold",
+   "color": "#FFFFFF",
+   "decor": true,
+   "visible": false,
+   "variants": {
+    "crash": {
+     "visible": true
+    }
+   }
+  },
+  {
+   "id": "Title",
+   "type": "text",
+   "parent": "ResultCard",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -80
+   ],
+   "size": [
+    800,
+    90
+   ],
+   "rotation": 0,
+   "text": "Gidilen mesafe",
+   "font": "title",
+   "fontSize": 60,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null,
+   "variants": {
+    "crash": {
+     "text": "<color=#B1180B>ÇARPTIN!</color> Gidilen mesafe",
+     "fontSize": 56,
+     "richText": true,
+     "animation": "ÇARPTIN! ölçek 1.4 → 1, 0.2 s, ease-out-back + 0.3 s titreme (kayma x ±6 px, 4 tekrar)"
+    }
+   },
+   "animation": "açılış: kart yerleştikten sonra 0.2 s solma 0 → 1"
+  },
+  {
+   "id": "Distance",
+   "type": "text",
+   "parent": "ResultCard",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    20
+   ],
+   "size": [
+    800,
+    220
+   ],
+   "rotation": 0,
+   "text": "312 m",
+   "font": "body",
+   "fontSize": 170,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": {
+    "color": "#C9A27A",
+    "offset": [
+     6,
+     -6
+    ]
+   },
+   "outline": null,
+   "animation": "0 → hedef değer sayar: 1.2 s, ease-out-cubic (kod), bittiğinde ölçek 1 → 1.12 → 1, 0.2 s, ease-out-back"
+  },
+  {
+   "id": "GoldPanel",
+   "type": "panel",
+   "parent": "ResultCard",
+   "anchor": "bottom",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    130
+   ],
+   "size": [
+    700,
+    88
+   ],
+   "rotation": 1,
+   "sprite": "strip_kraft",
+   "color": "#FFFFFF",
+   "shadow": null,
+   "decor": true,
+   "animation": "açılış: 0.25 s, kayma x -300 → 0 + solma, ease-out, gecikme 1.0 s"
+  },
+  {
+   "id": "GoldIcon",
+   "type": "icon",
+   "parent": "GoldPanel",
+   "anchor": "left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    64,
+    0
+   ],
+   "size": [
+    52,
+    52
+   ],
+   "rotation": 0,
+   "sprite": "icon_coin",
+   "color": "#FFFFFF",
+   "animation": "altın görününce: 0.3 s döngü 2 kez, ölçek 1 → 1.2 → 1"
+  },
+  {
+   "id": "Gold",
+   "type": "text",
+   "parent": "GoldPanel",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    28,
+    0
+   ],
+   "size": [
+    560,
+    60
+   ],
+   "rotation": 0,
+   "text": "+14 ALTIN (Toplam 244)",
+   "font": "body",
+   "fontSize": 36,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null,
+   "animation": "\"+14\" 0.6 s sayar; Toplam eski → yeni değere 0.6 s sayar"
+  },
+  {
+   "id": "CrashStamp",
+   "type": "image",
+   "parent": "ResultCard",
+   "anchor": "top-right",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    -110,
+    -260
+   ],
+   "size": [
+    200,
+    200
+   ],
+   "rotation": -14,
+   "sprite": "stamp_crash",
+   "color": "#FFFFFFE6",
+   "decor": true,
+   "visible": false,
+   "variants": {
+    "crash": {
+     "visible": true
+    }
+   },
+   "animation": "yalnız çarpmada: 0.18 s, ölçek 2 → 1, ease-in (damga basar), gecikme 0.5 s; sonra kart 0.1 s sarsılır (kayma ±8 px)"
+  },
+  {
+   "id": "ReplayButton",
+   "type": "button",
+   "parent": "ResultScreen",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -340
+   ],
+   "size": [
+    560,
+    120
+   ],
+   "rotation": -1.5,
+   "sprite": "button_primary",
+   "color": "#FFFFFF",
+   "text": "TEKRAR OYNA",
+   "font": "title",
+   "fontSize": 60,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "outline": null,
+   "states": {
+    "hover": {
+     "scale": 1.05,
+     "sprite": "button_primary_hover"
+    },
+    "pressed": {
+     "scale": 0.95,
+     "sprite": "button_primary_pressed",
+     "color": "#E8DCC6"
+    },
+    "disabled": {
+     "alpha": 0.5,
+     "sprite": "button_primary_disabled"
+    }
+   },
+   "animation": "açılış: 0.3 s, ölçek 0.8 → 1, ease-out-back, gecikme 1.4 s; boşta: 1.6 s ölçek 1 → 1.03, ping-pong"
+  }
+ ],
+ "assets": [
+  {
+   "id": "stamp_crash",
+   "kind": "sprite",
+   "size": [
+    200,
+    200
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\" viewBox=\"0 0 200 200\"><circle cx=\"100\" cy=\"100\" r=\"94\" fill=\"none\" stroke=\"#B1180B\" stroke-width=\"8\"/><circle cx=\"100\" cy=\"100\" r=\"80\" fill=\"none\" stroke=\"#B1180B\" stroke-width=\"3\"/><path d=\"M178.0 100.0 L142.5 117.6 L155.2 155.2 L117.6 142.5 L100.0 178.0 L82.4 142.5 L44.8 155.2 L57.5 117.6 L22.0 100.0 L57.5 82.4 L44.8 44.8 L82.4 57.5 L100.0 22.0 L117.6 57.5 L155.2 44.8 L142.5 82.4 Z\" fill=\"#B1180B\"/><path d=\"M92 70 L108 70 L104 112 L96 112 Z\" fill=\"#F4EBDD\"/><circle cx=\"100\" cy=\"128\" r=\"7\" fill=\"#F4EBDD\"/></svg>"
+  },
+  {
+   "id": "crumple_marks",
+   "kind": "sprite",
+   "size": [
+    512,
+    384
+   ],
+   "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"512\" height=\"384\" viewBox=\"0 0 512 384\"><path d=\"M0 90 L110 120 L170 70 L260 110 L330 60 L420 100 L512 70 M40 384 L90 290 L60 220 L140 170 L120 90 M512 250 L430 230 L400 300 L330 270 L300 384 M200 384 L240 300 L220 230 L290 190\" fill=\"none\" stroke=\"#2B2B3A\" stroke-opacity=\".28\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M110 120 L170 70 L150 150 Z M330 270 L400 300 L350 330 Z\" fill=\"#2B2B3A\" fill-opacity=\".07\"/></svg>"
+  }
+ ]
+}

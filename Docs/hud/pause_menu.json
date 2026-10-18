@@ -1,0 +1,428 @@
+{
+ "screen": "pause_menu",
+ "reference": [
+  1920,
+  1080
+ ],
+ "fonts": {
+  "title": "Caveat Brush",
+  "body": "Nunito"
+ },
+ "colors": {
+  "paper": "#F4EBDD",
+  "kraft": "#C9A27A",
+  "ink": "#2B2B3A",
+  "red": "#B1180B",
+  "gold": "#F2B630",
+  "blueInk": "#2F5D9E",
+  "overlay": "#00000099"
+ },
+ "elements": [
+  {
+   "id": "PauseMenu",
+   "type": "panel",
+   "parent": "Canvas",
+   "anchor": "stretch",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    0
+   ],
+   "size": [
+    1920,
+    1080
+   ],
+   "rotation": 0,
+   "color": "#00000099",
+   "animation": "açılış: 0.2 s, solma 0 → 0.6 alfa (unscaled time), ease-out; kapanış 0.15 s ters"
+  },
+  {
+   "id": "Box",
+   "type": "panel",
+   "parent": "PauseMenu",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -10
+   ],
+   "size": [
+    720,
+    640
+   ],
+   "rotation": -1.5,
+   "sprite": "panel_large",
+   "color": "#FFFFFF",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "animation": "açılış: 0.3 s, ölçek 0.8 → 1 ve dönme -6° → -1.5°, ease-out-back; kapanış 0.15 s, ölçek 1 → 0.9 + solma, ease-in"
+  },
+  {
+   "id": "BoxTape1",
+   "type": "image",
+   "parent": "Box",
+   "anchor": "top-left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    40,
+    -10
+   ],
+   "size": [
+    192,
+    64
+   ],
+   "rotation": -32,
+   "sprite": "tape_1",
+   "color": "#FFFFFF",
+   "decor": true
+  },
+  {
+   "id": "BoxTape2",
+   "type": "image",
+   "parent": "Box",
+   "anchor": "bottom-right",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    -40,
+    14
+   ],
+   "size": [
+    160,
+    56
+   ],
+   "rotation": -30,
+   "sprite": "tape_2",
+   "color": "#FFFFFF",
+   "decor": true
+  },
+  {
+   "id": "TitleStrip",
+   "type": "panel",
+   "parent": "Box",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -10
+   ],
+   "size": [
+    500,
+    104
+   ],
+   "rotation": 1.5,
+   "sprite": "strip_kraft",
+   "color": "#FFFFFF",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "decor": true,
+   "animation": "kutu yerleşince: 0.2 s, kayma y +30 → 0, ease-out"
+  },
+  {
+   "id": "Title",
+   "type": "text",
+   "parent": "TitleStrip",
+   "anchor": "center",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    2
+   ],
+   "size": [
+    440,
+    80
+   ],
+   "rotation": 0,
+   "text": "DURAKLATILDI",
+   "font": "title",
+   "fontSize": 56,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null
+  },
+  {
+   "id": "ResumeButton",
+   "type": "button",
+   "parent": "Box",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -170
+   ],
+   "size": [
+    480,
+    112
+   ],
+   "rotation": -1.5,
+   "sprite": "button_primary",
+   "color": "#FFFFFF",
+   "text": "DEVAM ET",
+   "font": "title",
+   "fontSize": 58,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "outline": null,
+   "states": {
+    "hover": {
+     "scale": 1.05,
+     "sprite": "button_primary_hover"
+    },
+    "pressed": {
+     "scale": 0.95,
+     "sprite": "button_primary_pressed",
+     "color": "#E8DCC6"
+    },
+    "disabled": {
+     "alpha": 0.5,
+     "sprite": "button_primary_disabled"
+    }
+   },
+   "animation": "açılış: 0.25 s, ölçek 0.8 → 1, ease-out-back, gecikme 0.15 s"
+  },
+  {
+   "id": "MainMenuButton",
+   "type": "button",
+   "parent": "Box",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    0,
+    -300
+   ],
+   "size": [
+    400,
+    92
+   ],
+   "rotation": 1,
+   "sprite": "button_secondary",
+   "color": "#FFFFFF",
+   "text": "ANA MENÜ",
+   "font": "title",
+   "fontSize": 46,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": {
+    "color": "#0000004D",
+    "offset": [
+     4,
+     -4
+    ]
+   },
+   "outline": null,
+   "states": {
+    "hover": {
+     "scale": 1.05,
+     "sprite": "button_secondary_hover"
+    },
+    "pressed": {
+     "scale": 0.95,
+     "sprite": "button_secondary_pressed",
+     "color": "#E8DCC6"
+    },
+    "disabled": {
+     "alpha": 0.5,
+     "sprite": "button_secondary_disabled"
+    }
+   },
+   "animation": "açılış: 0.25 s, ölçek 0.8 → 1, ease-out-back, gecikme 0.25 s"
+  },
+  {
+   "id": "VolumeIcon",
+   "type": "icon",
+   "parent": "Box",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    -70,
+    -410
+   ],
+   "size": [
+    56,
+    56
+   ],
+   "rotation": 0,
+   "sprite": "icon_sound",
+   "color": "#FFFFFF",
+   "decor": true,
+   "animation": "kaydırıcı değişince: 0.15 s, ölçek 1 → 1.15 → 1"
+  },
+  {
+   "id": "VolumeTitle",
+   "type": "text",
+   "parent": "Box",
+   "anchor": "top",
+   "pivot": [
+    0,
+    0.5
+   ],
+   "pos": [
+    -30,
+    -410
+   ],
+   "size": [
+    160,
+    64
+   ],
+   "rotation": 0,
+   "text": "SES",
+   "font": "title",
+   "fontSize": 48,
+   "textColor": "#2B2B3A",
+   "align": "left",
+   "shadow": null,
+   "outline": null
+  },
+  {
+   "id": "VolumeSlider",
+   "type": "slider",
+   "parent": "Box",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    -50,
+    -500
+   ],
+   "size": [
+    480,
+    32
+   ],
+   "rotation": 0,
+   "sprite": "slider_track",
+   "color": "#FFFFFF",
+   "value": 0.8,
+   "min": 0,
+   "max": 1,
+   "animation": "tıklayınca/sürüklerken Handle değer konumuna 0.05 s yumuşak izler"
+  },
+  {
+   "id": "Fill",
+   "type": "image",
+   "parent": "VolumeSlider",
+   "anchor": "left",
+   "pivot": [
+    0,
+    0.5
+   ],
+   "pos": [
+    3,
+    0
+   ],
+   "size": [
+    384,
+    24
+   ],
+   "rotation": 0,
+   "sprite": "slider_fill",
+   "color": "#2F5D9E",
+   "animation": "genişlik = 474 × değer (kod); Slider.fillRect"
+  },
+  {
+   "id": "Handle",
+   "type": "image",
+   "parent": "VolumeSlider",
+   "anchor": "left",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    384,
+    0
+   ],
+   "size": [
+    64,
+    64
+   ],
+   "rotation": 0,
+   "sprite": "slider_handle",
+   "color": "#FFFFFF",
+   "states": {
+    "dragging": {
+     "scale": 1.2,
+     "color": "#FFE7A8"
+    }
+   },
+   "animation": "sürüklemede: 0.1 s, ölçek 1 → 1.2, ease-out-back; bırakınca 0.1 s geri"
+  },
+  {
+   "id": "VolumeValue",
+   "type": "text",
+   "parent": "Box",
+   "anchor": "top",
+   "pivot": [
+    0.5,
+    0.5
+   ],
+   "pos": [
+    285,
+    -500
+   ],
+   "size": [
+    130,
+    64
+   ],
+   "rotation": 0,
+   "text": "%80",
+   "font": "body",
+   "fontSize": 40,
+   "textColor": "#2B2B3A",
+   "align": "center",
+   "shadow": null,
+   "outline": null,
+   "states": {
+    "dragging": {
+     "textColor": "#B1180B"
+    }
+   }
+  }
+ ],
+ "assets": []
+}
