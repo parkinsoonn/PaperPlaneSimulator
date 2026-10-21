@@ -126,6 +126,7 @@ public class StarSpawner : MonoBehaviour
         var pickup = go.AddComponent<StarPickup>();
         pickup.boost = type.boost;
         pickup.gold = type.gold;
+        pickup.sound = "star_" + type.name.ToLowerInvariant();
         pickup.glow = glow;
         stars.Add((go, s));
     }

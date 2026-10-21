@@ -17,7 +17,11 @@ public class UiHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
 
     void Awake() => selectable = GetComponent<Selectable>();
 
-    public void OnPointerEnter(PointerEventData e) => over = true;
+    public void OnPointerEnter(PointerEventData e)
+    {
+        over = true;
+        if (selectable != null && selectable.IsInteractable()) SoundManager.Play("ui_hover", 0.25f, ui: true);
+    }
     public void OnPointerExit(PointerEventData e) { over = false; down = false; }
     public void OnPointerDown(PointerEventData e) => down = true;
     public void OnPointerUp(PointerEventData e) => down = false;

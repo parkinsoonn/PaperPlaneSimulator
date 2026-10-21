@@ -129,6 +129,7 @@ public static class HudKit
         button.targetGraphic = image;
         button.transition = Selectable.Transition.SpriteSwap;
         SetButtonStyle(button, style);
+        button.onClick.AddListener(() => SoundManager.Play("ui_click", 0.7f, ui: true));
         button.onClick.AddListener(onClick);
         button.onClick.AddListener(() =>
         {

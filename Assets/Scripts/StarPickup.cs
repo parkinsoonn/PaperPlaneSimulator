@@ -5,6 +5,7 @@ public class StarPickup : MonoBehaviour
 {
     public float boost = 3f;
     public int gold = 1;
+    public string sound;   // SoundManager id played on pickup (star_blue / star_yellow / star_red)
     public float spinSpeed = 120f;
     public Transform glow;          // halo around the star (optional)
     public float pulseAmount = 0.15f;
@@ -32,6 +33,7 @@ public class StarPickup : MonoBehaviour
         if (plane == null || !plane.IsFlying) return;
         plane.AddBoost(boost);
         plane.AddGold(gold);
+        if (!string.IsNullOrEmpty(sound)) SoundManager.Play(sound, 0.8f);
         Destroy(gameObject);
     }
 }
