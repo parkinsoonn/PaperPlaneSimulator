@@ -73,6 +73,7 @@ public class ShopMenu : MonoBehaviour
 
     public void Open()
     {
+        SoundManager.Play("ui_open", 0.6f, ui: true);
         shownGold = PlayerWallet.Gold;
         goldLabel.text = $"ALTIN: {shownGold}";
         Refresh(true);
@@ -87,7 +88,11 @@ public class ShopMenu : MonoBehaviour
         UiAnim.Fade(board.GetComponent<CanvasGroup>(), 0f, 1f, 0.3f);
     }
 
-    public void Close() => SetVisible(false);
+    public void Close()
+    {
+        SoundManager.Play("ui_close", 0.6f, ui: true);
+        SetVisible(false);
+    }
 
     void SetVisible(bool visible)
     {
@@ -97,6 +102,7 @@ public class ShopMenu : MonoBehaviour
 
     void SelectTab(CosmeticCategory category)
     {
+        SoundManager.Play("ui_tab", 0.6f, ui: true);
         tab = category;
         Refresh(true);
         UiAnim.ScaleIn(tabs[(int)category].transform, 0.95f, 0.12f);
@@ -177,8 +183,12 @@ public class ShopMenu : MonoBehaviour
         bool affordable = PlayerWallet.CanAfford(item);
         var button = HudKit.Button("ActionButton", card, "", owned ? "secondary" : "primary", 40, () =>
         {
-            if (PlayerWallet.IsOwned(item)) PlayerWallet.Equip(item);
-            else PlayerWallet.TryBuy(item);
+            if (PlayerWallet.IsOwned(item))
+            {
+                PlayerWallet.Equip(item);
+                SoundManager.Play("ui_equip", 0.7f, ui: true);
+            }
+            else if (PlayerWallet.TryBuy(item)) SoundManager.Play("ui_purchase", 0.8f, ui: true);
         }, "bottom", new Vector2(0f, 48f), new Vector2(460f, 80f));
         var text = button.GetComponentInChildren<Text>();
         Vector2 textShift = Vector2.zero;
@@ -209,6 +219,11 @@ public class ShopMenu : MonoBehaviour
             textShift = new Vector2(-26f, 0f);
             icon = "icon_lock";
             button.interactable = false;   // swaps to the disabled sprite
+            // A disabled button ignores clicks; a trigger still answers them with a soft "no".
+            var trigger = button.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+            var entry = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.PointerClick };
+            entry.callback.AddListener(_ => SoundManager.Play("ui_denied", 0.7f, ui: true));
+            trigger.triggers.Add(entry);
             button.gameObject.AddComponent<CanvasGroup>().alpha = 0.85f;
         }
         text.rectTransform.anchoredPosition += textShift;

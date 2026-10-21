@@ -45,7 +45,7 @@ public class LaunchPowerHUD : MonoBehaviour
 
     // Intro screen
     CanvasGroup startGroup;
-    RectTransform skyline, titleCard, goldPanel, controlsNote;
+    RectTransform skyline, titleCard, goldPanel, controlsNote, volumePanel;
     Image flightPath;
     Button startButton, shopButton, quitButton;
     Text startGoldLabel;
@@ -55,10 +55,14 @@ public class LaunchPowerHUD : MonoBehaviour
 
     // Pause menu
     CanvasGroup pauseGroup;
-    RectTransform pauseBox, pauseTitleStrip, volumeHandle;
+    RectTransform pauseBox, pauseTitleStrip;
     Button resumeButton, mainMenuButton;
-    Text volumeLabel;
+    readonly System.Collections.Generic.List<Slider> volumeSliders = new System.Collections.Generic.List<Slider>();
+    readonly System.Collections.Generic.List<Text> volumeLabels = new System.Collections.Generic.List<Text>();
     bool paused;           // Esc menu is open; the game is frozen
+
+    public bool Started => started;
+    public bool Paused => paused;
 
     void Start()
     {
@@ -83,6 +87,10 @@ public class LaunchPowerHUD : MonoBehaviour
         CreatePauseMenu(canvas);
         plane.enabled = false;
         PlayStartIntro();
+
+        var gameAudio = gameObject.AddComponent<GameAudio>();
+        gameAudio.plane = plane;
+        gameAudio.hud = this;
     }
 
     // ---------------------------------------------------------------- flight HUD (flight_hud.json)
@@ -202,6 +210,15 @@ public class LaunchPowerHUD : MonoBehaviour
             "top-left", new Vector2(160f, -72f), new Vector2(240f, 84f), 1.5f);
         quitButton.GetComponentInChildren<Text>().color = HudKit.Paper;
 
+        // Volume card under ÇIKIŞ: speaker icon, slider and value.
+        var volume = HudKit.Image("VolumePanel", root, "panel_label", "top-left", new Vector2(230f, -170f), new Vector2(380f, 72f), -1f, shadow: true);
+        volumePanel = volume.rectTransform;
+        var menuVolumeIcon = HudKit.Icon("VolumeIcon", volume.transform, "icon_sound", "left", new Vector2(36f, 0f), 40f);
+        var menuVolumeValue = HudKit.Label("VolumeValue", volume.transform, "", false, 30, "right", new Vector2(-20f, 0f), new Vector2(80f, 48f),
+            align: TextAnchor.MiddleRight, pivot: new Vector2(1f, 0.5f));
+        menuVolumeValue.font = HudKit.CounterFont;
+        CreateVolumeSlider(volume.transform, "center", new Vector2(-20f, 0f), new Vector2(200f, 24f), 44f, menuVolumeIcon.transform, menuVolumeValue);
+
         var note = HudKit.Image("ControlsNote", root, "panel_label", "bottom", new Vector2(0f, 208f), new Vector2(1060f, 84f), 1f, shadow: true);
         controlsNote = note.rectTransform;
         note.gameObject.AddComponent<CanvasGroup>();
@@ -226,7 +243,7 @@ public class LaunchPowerHUD : MonoBehaviour
     // Opening animation of the intro screen (on Play and on every return to the main menu).
     void PlayStartIntro()
     {
-        foreach (Object target in new Object[] { startGroup, skyline, titleCard, flightPath, goldPanel, controlsNote, quitButton.transform })
+        foreach (Object target in new Object[] { startGroup, skyline, titleCard, flightPath, goldPanel, controlsNote, quitButton.transform, volumePanel })
             UiAnim.Kill(target);
         UiAnim.Fade(startGroup, 0f, 1f, 0.3f);
         UiAnim.SlideIn(skyline, new Vector2(0f, -220f), 0.5f);
@@ -234,6 +251,7 @@ public class LaunchPowerHUD : MonoBehaviour
         UiAnim.Play(flightPath, 0.6f, k => flightPath.color = new Color(1f, 1f, 1f, 0.7f * k), 0.5f);
         UiAnim.SlideIn(goldPanel, new Vector2(200f, 0f), 0.3f, 0.2f);
         UiAnim.SlideIn((RectTransform)quitButton.transform, new Vector2(-200f, 0f), 0.3f, 0.2f);
+        UiAnim.SlideIn(volumePanel, new Vector2(-460f, 0f), 0.3f, 0.3f);
         UiAnim.ScaleIn(startButton.transform, 0.8f, 0.3f, 0.55f);
         UiAnim.ScaleIn(shopButton.transform, 0.8f, 0.3f, 0.7f);
         UiAnim.SlideIn(controlsNote, new Vector2(0f, -20f), 0.3f, 0.9f);
@@ -304,12 +322,14 @@ public class LaunchPowerHUD : MonoBehaviour
         UiAnim.RotateIn(resultCard, 8f, 0.45f);
         UiAnim.ScaleIn(resultTape1, 0f, 0.15f, 0.45f);
         UiAnim.ScaleIn(resultTape2, 0f, 0.15f, 0.5f);
+        SoundManager.Play("result_card", 0.8f, ui: true, delay: 0.4f);
         UiAnim.Play(resultTitle, 0.2f, k => resultTitle.color = new Color(HudKit.Ink.r, HudKit.Ink.g, HudKit.Ink.b, k), 0.45f);
         if (crash)
         {
             UiAnim.Shake(resultTitle.rectTransform, 6f, 0.3f, 4, 0.6f);
             crashStamp.localScale = Vector3.zero;   // stamped in after the card lands
             UiAnim.ScaleIn(crashStamp, 2f, 0.18f, 0.5f, Ease.InQuad, applyNow: false);
+            SoundManager.Play("result_stamp", 0.9f, ui: true, delay: 0.66f);
             UiAnim.Shake(resultCard, 8f, 0.1f, 2, 0.7f);
         }
 
@@ -317,13 +337,24 @@ public class LaunchPowerHUD : MonoBehaviour
         UiAnim.Count(resultDistance, 0f, meters, 1.2f, v => $"{v} m", 0.3f,
             () => UiAnim.Punch(resultDistance.transform, 1.12f, 0.2f));
 
-        resultGoldPanel.anchoredPosition = new Vector2(0f, 130f);
+        resultGoldPanel.anchoredPosition = new Vector2(0f, 126f);
         UiAnim.SlideIn(resultGoldPanel, new Vector2(-300f, 0f), 0.25f, 1f);
         UiAnim.Fade(resultGoldPanel.GetComponent<CanvasGroup>(), 0f, 1f, 0.25f, 1f);
         int before = total - earnedGold;
+        int shown = 0;
+        float lastTick = 0f;
         UiAnim.Play(resultGold, 0.6f, k =>
-            resultGold.text = $"+{Mathf.RoundToInt(earnedGold * k)} ALTIN  (Toplam {Mathf.RoundToInt(Mathf.Lerp(before, total, k))})",
-            1.1f, Ease.OutCubic, done: () => UiAnim.Punch(resultGoldIcon.transform, 1.2f, 0.3f));
+        {
+            int gained = Mathf.RoundToInt(earnedGold * k);
+            resultGold.text = $"+{gained} ALTIN  (Toplam {Mathf.RoundToInt(Mathf.Lerp(before, total, k))})";
+            // A coin tick as the number climbs (at most ~20 per second).
+            if (gained != shown && Time.unscaledTime - lastTick > 0.05f)
+            {
+                SoundManager.Play("coin_tick", 0.4f, 1f + 0.4f * k, ui: true);
+                lastTick = Time.unscaledTime;
+            }
+            shown = gained;
+        }, 1.1f, Ease.OutCubic, done: () => UiAnim.Punch(resultGoldIcon.transform, 1.2f, 0.3f));
 
         UiAnim.ScaleIn(replayButton.transform, 0.8f, 0.3f, 1.4f);
     }
@@ -382,17 +413,17 @@ public class LaunchPowerHUD : MonoBehaviour
         var volumeIcon = HudKit.Icon("VolumeIcon", pauseBox, "icon_sound", "top", new Vector2(-122f, -414f), 56f);
         HudKit.Label("VolumeTitle", pauseBox, "SES", true, 48, "top", new Vector2(-82f, -414f), new Vector2(160f, 64f),
             align: TextAnchor.MiddleLeft, pivot: new Vector2(0f, 0.5f));
-        CreateVolumeSlider(pauseBox, volumeIcon.transform);
-        volumeLabel = HudKit.Label("VolumeValue", pauseBox, "", false, 40, "top", new Vector2(262f, -484f), new Vector2(130f, 64f));
-        volumeLabel.font = HudKit.CounterFont;
-        UpdateVolumeLabel(GameSettings.MasterVolume);
+        var volumeValue = HudKit.Label("VolumeValue", pauseBox, "", false, 40, "top", new Vector2(262f, -484f), new Vector2(130f, 64f));
+        volumeValue.font = HudKit.CounterFont;
+        CreateVolumeSlider(pauseBox, "top", new Vector2(-50f, -484f), new Vector2(480f, 32f), 64f, volumeIcon.transform, volumeValue);
 
         SetPauseVisible(false);
     }
 
-    void CreateVolumeSlider(Transform parent, Transform volumeIcon)
+    // Master volume slider (pause menu and intro screen). Every slider and value label follows the same setting.
+    void CreateVolumeSlider(Transform parent, string anchor, Vector2 pos, Vector2 size, float handleSize, Transform icon, Text value)
     {
-        var track = HudKit.Image("VolumeSlider", parent, "slider_track", "top", new Vector2(-50f, -484f), new Vector2(480f, 32f));
+        var track = HudKit.Image("VolumeSlider", parent, "slider_track", anchor, pos, size);
         track.raycastTarget = true;
         var root = track.rectTransform;
 
@@ -402,33 +433,38 @@ public class LaunchPowerHUD : MonoBehaviour
         var fillRect = HudKit.Image("Fill", fillArea, "slider_fill", "stretch", color: HudKit.BlueInk).rectTransform;
 
         var handleArea = HudKit.Rect("HandleArea", root, "stretch");
-        handleArea.offsetMin = new Vector2(28f, 0f);
-        handleArea.offsetMax = new Vector2(-28f, 0f);   // keeps the handle on the track at 100%
-        var handleImage = HudKit.Image("Handle", handleArea, "slider_handle", "center", Vector2.zero, new Vector2(64f, 64f));
+        handleArea.offsetMin = new Vector2(handleSize * 0.45f, 0f);
+        handleArea.offsetMax = new Vector2(-handleSize * 0.45f, 0f);   // keeps the handle on the track at 100%
+        var handleImage = HudKit.Image("Handle", handleArea, "slider_handle", "center", Vector2.zero, new Vector2(handleSize, handleSize));
         handleImage.raycastTarget = true;
-        volumeHandle = handleImage.rectTransform;
+        var handle = handleImage.rectTransform;
 
         var slider = root.gameObject.AddComponent<Slider>();
         slider.fillRect = fillRect;
-        slider.handleRect = volumeHandle;
+        slider.handleRect = handle;
         slider.targetGraphic = handleImage;
         var colors = slider.colors;
         colors.pressedColor = HudKit.Hex("#FFE7A8");
         slider.colors = colors;
         slider.minValue = 0f;
         slider.maxValue = 1f;
-        slider.value = GameSettings.MasterVolume;
+        slider.SetValueWithoutNotify(GameSettings.MasterVolume);
+        volumeSliders.Add(slider);
+        volumeLabels.Add(value);
+        UpdateVolumeLabels(GameSettings.MasterVolume);
         slider.onValueChanged.AddListener(v =>
         {
             GameSettings.MasterVolume = v;
-            UpdateVolumeLabel(v);
-            UiAnim.Punch(volumeIcon, 1.15f, 0.15f);
+            foreach (var other in volumeSliders)
+                if (other != slider) other.SetValueWithoutNotify(v);
+            UpdateVolumeLabels(v);
+            UiAnim.Punch(icon, 1.15f, 0.15f);
         });
 
         // While dragging: bigger handle and a red value.
         var trigger = root.gameObject.AddComponent<EventTrigger>();
-        AddTrigger(trigger, EventTriggerType.PointerDown, () => SetVolumeDragging(true));
-        AddTrigger(trigger, EventTriggerType.PointerUp, () => SetVolumeDragging(false));
+        AddTrigger(trigger, EventTriggerType.PointerDown, () => SetVolumeDragging(handle, value, true));
+        AddTrigger(trigger, EventTriggerType.PointerUp, () => SetVolumeDragging(handle, value, false));
     }
 
     static void AddTrigger(EventTrigger trigger, EventTriggerType type, System.Action action)
@@ -438,14 +474,17 @@ public class LaunchPowerHUD : MonoBehaviour
         trigger.triggers.Add(entry);
     }
 
-    void SetVolumeDragging(bool dragging)
+    static void SetVolumeDragging(RectTransform handle, Text value, bool dragging)
     {
-        UiAnim.Kill(volumeHandle);
-        UiAnim.ScaleIn(volumeHandle, volumeHandle.localScale.x, 0.1f, 0f, Ease.OutBack, dragging ? 1.2f : 1f);
-        volumeLabel.color = dragging ? HudKit.Red : HudKit.Ink;
+        UiAnim.Kill(handle);
+        UiAnim.ScaleIn(handle, handle.localScale.x, 0.1f, 0f, Ease.OutBack, dragging ? 1.2f : 1f);
+        value.color = dragging ? HudKit.Red : HudKit.Ink;
     }
 
-    void UpdateVolumeLabel(float v) => volumeLabel.text = $"%{Mathf.RoundToInt(v * 100f)}";
+    void UpdateVolumeLabels(float v)
+    {
+        foreach (var label in volumeLabels) label.text = $"%{Mathf.RoundToInt(v * 100f)}";
+    }
 
     void SetPauseVisible(bool visible)
     {
@@ -471,6 +510,7 @@ public class LaunchPowerHUD : MonoBehaviour
     // Freezes the game (physics, traffic, stars) and blocks plane input while the menu is open.
     void SetPaused(bool value)
     {
+        if (value != paused) SoundManager.Play(value ? "ui_open" : "ui_close", 0.6f, ui: true);
         paused = value;
         Time.timeScale = value ? 0f : 1f;
         plane.enabled = started && !value;

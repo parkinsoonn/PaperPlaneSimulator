@@ -51,7 +51,8 @@ Uçak yere indiğinde gidilen mesafe (cadde boyunca) gösterilir. Bir araca ya d
 - **Gökyüzü**: AllSky Free'den "Epic_BlueSunset" (bulutlu mavi gökyüzü).
 - **Koridor**: uçak caddenin kenarına yaklaşınca, virajlarda da, yumuşakça ortaya geri yönlendirilir.
 - **Rüzgar izi**: uçarken kanat uçlarından ince, saydam izler çıkar.
-- **Ses ayarı**: Esc menüsündeki SES çubuğu ana ses seviyesini ayarlar ve hatırlar; ileride eklenecek tüm sesler buna uyar.
+- **Ses ayarı**: ana menüdeki (ÇIKIŞ'ın altında) ve Esc menüsündeki ses çubukları aynı ana ses seviyesini ayarlar ve hatırlar; bütün sesler ve müzik buna uyar.
+- **Sesler ve müzik**: arayüz tıklamaları, güç şarjı ve %90 tiki, fırlatma, 3 ayrı yıldız sesi, stall, iniş/çarpma, sonuç kartı ve damga, altın sayma, ara sıra korna; giriş ekranı ve uçuş için ayrı müzik. Kaynaklar ve prompt'lar `Docs/sound-prompts.md`.
 - **Kâğıt/el işi arayüz**: bütün ekranlar (giriş, güç çubuğu ve mesafe, sonuç, duraklatma, mağaza) Claude Design ile tasarlanan kitten: bantlı kâğıt kartlar, kraft şeritler, el yazısı başlıklar, açılış ve hover animasyonları, çarpınca buruşuk kart ve damga. Kaynak spec'ler ve SVG'ler `Docs/hud/`; sprite'lar `Tools/render-hud-sprites.ps1` ile (Edge headless) `Assets/Resources/UI/`'ya üretilir.
 
 ## Kurulum
@@ -74,6 +75,9 @@ Kullanılan paketler: Universal Render Pipeline, Input System. Resimler Git LFS 
 | `Assets/Scripts/ShopMenu.cs` | Mağaza ekranı: renk / şekil / efekt sekmeleri, satın al / kullan |
 | `Assets/Scripts/HudKit.cs` | Arayüz kiti: renkler, fontlar, sprite'lar ve spec'teki alanlarla panel / yazı / buton kuran yardımcılar |
 | `Assets/Scripts/UiAnim.cs`, `UiHover.cs` | Arayüz animasyonları (duraklatmada da çalışır) ve buton hover/basma ölçeği |
+| `Assets/Scripts/SoundManager.cs`, `GameAudio.cs` | Ses çalma (havuz, döngüler, müzik geçişi) ve uçağın durumuna bağlı oyun sesleri |
+| `Assets/Resources/Audio/` | Ses efektleri ve müzikler (id adlarıyla) |
+| `Assets/Editor/SynthSounds.cs` | Eksik 6 sesi kodla üretir (Tools > Kağıt Uçak > Generate Synth Sounds) |
 | `Assets/Resources/UI/*.png`, `Assets/Resources/Fonts/` | Arayüz sprite'ları; Caveat Brush ve Nunito fontları (OFL) |
 | `Docs/hud/`, `Tools/render-hud-sprites.ps1` | Claude Design HUD spec'leri ve SVG kaynakları; SVG → PNG betiği |
 | `Assets/Scripts/CosmeticCatalog.cs` | Mağazadaki kozmetiklerin listesi ve fiyatları |
@@ -114,8 +118,10 @@ Hepsi Inspector'dan ya da JSON dosyalarından değiştirilebilir:
 - **Mağaza**: fiyatlar, renkler ve iz efektleri `Assets/Scripts/CosmeticCatalog.cs`; yeni kozmetik = listeye bir satır.
 - **Gökyüzü ve sis**: `Assets/Materials/SkyAllSky.mat` (gökyüzü resmi, ufuk geçişi); sis Window → Rendering → Lighting → Environment → Fog.
 - **Rüzgar izi**: `PaperPlane` → `WindTrail` (saydamlık, kalınlık, uzunluk).
+- **Ses seviyeleri**: efektlerin genel seviyesi `SoundManager.EffectsMix` (0.55), müzik `SoundManager.PlayMusic` (0.18); tek tek seslerin seviyeleri çağrıldıkları yerde (`GameAudio`, `ShopMenu`, `LaunchPowerHUD`).
 
 ## Kaynaklar
 
 - Gökyüzü: [AllSky Free - 10 Sky / Skybox Set](https://assetstore.unity.com/) (Unity Asset Store, ücretsiz).
 - Fontlar: [Caveat Brush](https://fonts.google.com/specimen/Caveat+Brush) ve [Nunito](https://fonts.google.com/specimen/Nunito), SIL Open Font License (`Assets/Resources/Fonts/*-OFL.txt`).
+- Sesler: efektler ElevenLabs Sound Effects, müzikler Suno ile (ücretsiz planlar; kişisel kullanım). İniş, çarpma, sonuç kartı, damga, altın tıkı ve korna `SynthSounds.cs` ile kodla üretilir. Prompt'lar `Docs/sound-prompts.md`.
